@@ -2,7 +2,6 @@
 #define SONG_H
 
 #include <QObject>
-#include <QColor>
 
 // song object holds song info
 class Song : public QObject
@@ -13,7 +12,7 @@ class Song : public QObject
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(QString artist READ artist CONSTANT)
     Q_PROPERTY(QString album READ album CONSTANT)
-    Q_PROPERTY(QString image_url READ image_url CONSTANT)
+    Q_PROPERTY(QString imageUrl READ imageUrl CONSTANT)
 
 public:
     explicit Song(QObject *parent=0);
@@ -24,10 +23,12 @@ public:
     void setTitle(const QString &title);
     QString artist() const;
     QString album() const;
-    QString image_url() const;
+    QString imageUrl() const;
+    QString songFileUrl() const;
 
 signals:
     void titleChanged();
+    void playPause(const QString &text);
 
 private:
     const QString m_index;
@@ -36,6 +37,9 @@ private:
     const QString m_album;
     const QString m_image_url;
     const QString m_song_file_url;
+
+//public slots:
+//    void someSlot(const QString &text);
 };
 
 #endif

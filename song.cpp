@@ -32,6 +32,18 @@ QString Song::album() const {
     return m_album;
 }
 
-QString Song::image_url() const {
+QString Song::imageUrl() const {
     return m_image_url;
 }
+
+QString Song::songFileUrl() const {
+    return m_song_file_url;
+}
+
+//void Song::someSlot(const QString &text)
+//{
+//    QString nText = text;
+//    emit someSignal(nText);
+
+//    qDebug() << "hi "+nText;
+//}

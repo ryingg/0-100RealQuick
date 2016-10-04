@@ -12,14 +12,13 @@ QList<QObject*> ItunesList::songList() {
     return m_song_list;
 }
 
-// playlist accessor
-QMediaPlaylist* ItunesList::playlist() {
-    return m_playlist;
+// player song list accessor
+QList<Song*> ItunesList::playerSongList() {
+    return m_player_song_list;
 }
 
 // slot to build song list from file
 void ItunesList::buildSongList( QNetworkReply * reply) {
-    m_playlist = new QMediaPlaylist; // create audio playlist
 
     QTemporaryFile temp_file; // create temp xml file
     temp_file.open();
@@ -30,7 +29,7 @@ void ItunesList::buildSongList( QNetworkReply * reply) {
     song_count = 0; // count items
     while (!reader.atEnd() && !reader.hasError()) {
         reader.readNext();
-        if (reader.isStartElement() && reader.name() == "entry") {
+        if (reader.isStartElement() && reader.name() == "entry") { // parse xml info
             song_count++;
             while(reader.name()!="name") reader.readNextStartElement(); // read song title
             QString title = reader.readElementText();
@@ -45,11 +44,11 @@ void ItunesList::buildSongList( QNetworkReply * reply) {
             while(reader.name()!="collection") reader.readNextStartElement(); // read album
             while(reader.name()!="name") reader.readNextStartElement();
             QString album = reader.readElementText();
-            m_song_list.append(new Song(QString::number(song_count), title, artist, album, image_url, song_file_url)); // create song entry
-            m_playlist->addMedia(QUrl(song_file_url)); // create playlist entry
+            Song *song = new Song(QString::number(song_count), title, artist, album, image_url, song_file_url);
+            m_song_list.append(song); // create song entry
+            m_player_song_list.append(song);
         }
     }
-    m_playlist->setCurrentIndex(1);
-    qDebug() << "length" << m_song_list.length();
+
     emit songListCreated(); // finished appending data
 }

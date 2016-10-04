@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>view.qml</file>
         <file>Song.qml</file>
+        <file>Highlight.qml</file>
     </qresource>
 </RCC>
