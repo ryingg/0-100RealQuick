@@ -2,50 +2,36 @@
 #include "song.h"
 
 Song::Song(QObject *parent)
-    : QObject(parent)
-{
+    : QObject(parent) {
 }
 
-Song::Song(const QString &name, const QString &test, const QColor &qcolor, QObject *parent)
-    : QObject(parent), m_name(name), m_test(test), m_qcolor(qcolor)
-{
+Song::Song(const QString &index, const QString &title, const QString &artist, const QString &album, const QString &image_url, const QString &song_url, QObject *parent)
+    : QObject(parent), m_index(index), m_title(title), m_artist(artist), m_album(album), m_image_url(image_url), m_song_url(song_url) {
 }
 
-QString Song::name() const
-{
-    return m_name;
+QString Song::index() const {
+    return m_index;
 }
 
-void Song::setName(const QString &name)
-{
-    if (name != m_name) {
-        m_name = name;
-        emit nameChanged();
+QString Song::title() const {
+    return m_title;
+}
+
+void Song::setTitle(const QString &title) {
+    if (title != m_title) {
+        m_title = title;
+        emit titleChanged();
     }
 }
 
-QString Song::test() const
-{
-    return m_test;
+QString Song::artist() const {
+    return m_artist;
 }
 
-void Song::setTest(const QString &test)
-{
-    if (test != m_test) {
-        m_test = test;
-        emit testChanged();
-    }
+QString Song::album() const {
+    return m_album;
 }
 
-QColor Song::qcolor() const
-{
-    return m_qcolor;
-}
-
-void Song::setQcolor(const QColor &qcolor)
-{
-    if (qcolor != m_qcolor) {
-        m_qcolor = qcolor;
-        emit qcolorChanged();
-    }
+QString Song::image_url() const {
+    return m_image_url;
 }

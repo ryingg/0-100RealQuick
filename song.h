@@ -9,32 +9,33 @@ class Song : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString test READ test WRITE setTest NOTIFY testChanged)
-    Q_PROPERTY(QColor qcolor READ qcolor WRITE setQcolor NOTIFY qcolorChanged)
+    Q_PROPERTY(QString index READ index CONSTANT)
+    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+    Q_PROPERTY(QString artist READ artist CONSTANT)
+    Q_PROPERTY(QString album READ album CONSTANT)
+    Q_PROPERTY(QString image_url READ image_url CONSTANT)
 
 public:
     explicit Song(QObject *parent=0);
-    explicit Song(const QString &name, const QString &test, const QColor &qcolor, QObject *parent=0);
+    explicit Song(const QString &index, const QString &title, const QString &artist, const QString &album, const QString &image_url, const QString &song_url, QObject *parent=0);
 
-    QString name() const;
-    void setName(const QString &name);
-
-    QString test() const;
-    void setTest(const QString &test);
-
-    QColor qcolor() const;
-    void setQcolor(const QColor &qcolor);
+    QString index() const;
+    QString title() const;
+    void setTitle(const QString &title);
+    QString artist() const;
+    QString album() const;
+    QString image_url() const;
 
 signals:
-    void nameChanged();
-    void testChanged();
-    void qcolorChanged();
+    void titleChanged();
 
 private:
-    QString m_name;
-    QString m_test;
-    QColor m_qcolor;
+    const QString m_index;
+    QString m_title;
+    const QString m_artist;
+    const QString m_album;
+    const QString m_image_url;
+    const QString m_song_url;
 };
 
 #endif

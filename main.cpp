@@ -9,13 +9,13 @@
 
 #include "song.h"
 #include "topitunes.h"
+#include "player.h"
 
 /*
    This example illustrates exposing a QList<QObject*> as a
    model in QML
 */
-int main(int argc, char ** argv)
-{
+int main(int argc, char ** argv) {
     QGuiApplication app(argc, argv); // start app and engine
     QQmlEngine engine;
     TopItunes *top_itunes = new TopItunes(); // create new top itunes object
@@ -30,6 +30,12 @@ int main(int argc, char ** argv)
     ctxt->setContextProperty("songListModel", QVariant::fromValue(top_itunes->songList()));
     view.setSource(QUrl("qrc:/view.qml"));
     view.show();
+
+//    Player *player = new Player();
+    QMediaPlayer *player = new QMediaPlayer;
+    player->setPlaylist(top_itunes->playlist());
+    player->setVolume(50);
+    player->play();
 
     return app.exec();
 }
