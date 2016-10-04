@@ -1,24 +1,24 @@
-#include "topitunes.h"
+#include "ituneslist.h"
 // itunes object made to parse itunes xml, can easily be refactored into other feeds
 // top itunes qobject with network access and song list object
-TopItunes::TopItunes(QObject *parent) : QObject(parent) {
+ItunesList::ItunesList(QObject *parent) : QObject(parent) {
     m_network_access_manager = new QNetworkAccessManager(this);
-    connect(m_network_access_manager, SIGNAL(finished(QNetworkReply*)),this, SLOT(fileIsReady(QNetworkReply*))); // call fileisready after loaded
+    connect(m_network_access_manager, SIGNAL(finished(QNetworkReply*)),this, SLOT(buildSongList(QNetworkReply*))); // build song list from reply
     m_network_access_manager->get(QNetworkRequest(QUrl(ITUNES_URL))); // get reply from url
 }
 
 // song list accessor
-QList<QObject*> TopItunes::songList() {
+QList<QObject*> ItunesList::songList() {
     return m_song_list;
 }
 
 // playlist accessor
-QMediaPlaylist* TopItunes::playlist() {
+QMediaPlaylist* ItunesList::playlist() {
     return m_playlist;
 }
 
 // slot to build song list from file
-void TopItunes::fileIsReady( QNetworkReply * reply) {
+void ItunesList::buildSongList( QNetworkReply * reply) {
     m_playlist = new QMediaPlaylist; // create audio playlist
 
     QTemporaryFile temp_file; // create temp xml file
@@ -37,7 +37,7 @@ void TopItunes::fileIsReady( QNetworkReply * reply) {
             while(reader.name()!="link") reader.readNextStartElement(); // read itunes url
             while(reader.name()!="contentType") reader.readNextStartElement(); // skip to next element
             while(reader.name()!="link") reader.readNextStartElement(); // read song url
-            QString song_url = reader.attributes().value("href").toString();
+            QString song_file_url = reader.attributes().value("href").toString();
             while(reader.name()!="artist") reader.readNextStartElement(); // read artist
             QString artist = reader.readElementText();
             while(reader.name()!="image") reader.readNextStartElement(); // read image
@@ -45,8 +45,8 @@ void TopItunes::fileIsReady( QNetworkReply * reply) {
             while(reader.name()!="collection") reader.readNextStartElement(); // read album
             while(reader.name()!="name") reader.readNextStartElement();
             QString album = reader.readElementText();
-            m_song_list.append(new Song(QString::number(song_count), title, artist, album, image_url, song_url)); // create song entry
-            m_playlist->addMedia(QUrl(song_url)); // create playlist entry
+            m_song_list.append(new Song(QString::number(song_count), title, artist, album, image_url, song_file_url)); // create song entry
+            m_playlist->addMedia(QUrl(song_file_url)); // create playlist entry
         }
     }
     m_playlist->setCurrentIndex(1);

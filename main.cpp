@@ -8,7 +8,7 @@
 #include <QDebug>
 
 #include "song.h"
-#include "topitunes.h"
+#include "ituneslist.h"
 #include "player.h"
 
 /*
@@ -18,22 +18,22 @@
 int main(int argc, char ** argv) {
     QGuiApplication app(argc, argv); // start app and engine
     QQmlEngine engine;
-    TopItunes *top_itunes = new TopItunes(); // create new top itunes object
+    ItunesList *itunes_list = new ItunesList(); // create new top itunes list object
 
     QEventLoop loop; // wait for songListCreated signal
-    QObject::connect((QObject*)top_itunes, SIGNAL(songListCreated()), &loop, SLOT(quit()));
+    QObject::connect((QObject*)itunes_list, SIGNAL(songListCreated()), &loop, SLOT(quit()));
     loop.exec();
 
     QQuickView view; // expose songList as a model in QML
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     QQmlContext *ctxt = view.rootContext();
-    ctxt->setContextProperty("songListModel", QVariant::fromValue(top_itunes->songList()));
+    ctxt->setContextProperty("songListModel", QVariant::fromValue(itunes_list->songList()));
     view.setSource(QUrl("qrc:/view.qml"));
     view.show();
 
 //    Player *player = new Player();
     QMediaPlayer *player = new QMediaPlayer;
-    player->setPlaylist(top_itunes->playlist());
+    player->setPlaylist(itunes_list->playlist());
     player->setVolume(50);
     player->play();
 

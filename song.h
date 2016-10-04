@@ -17,7 +17,7 @@ class Song : public QObject
 
 public:
     explicit Song(QObject *parent=0);
-    explicit Song(const QString &index, const QString &title, const QString &artist, const QString &album, const QString &image_url, const QString &song_url, QObject *parent=0);
+    explicit Song(const QString &index, const QString &title, const QString &artist, const QString &album, const QString &image_url, const QString &song_file_url, QObject *parent=0);
 
     QString index() const;
     QString title() const;
@@ -35,7 +35,7 @@ private:
     const QString m_artist;
     const QString m_album;
     const QString m_image_url;
-    const QString m_song_url;
+    const QString m_song_file_url;
 };
 
 #endif
