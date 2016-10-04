@@ -9,5 +9,7 @@
         <file>fonts/brandonlight.ttf</file>
         <file>fonts/brandonmedium.ttf</file>
         <file>fonts/brandonregular.ttf</file>
+        <file>Header.qml</file>
+        <file>images/volume.png</file>
     </qresource>
 </RCC>

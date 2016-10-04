@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 // default text attributes
 Text {
-    font.family: brandonRegular.name
+    font.family: brandon.name
     font.pointSize: 14
     color: "#888888"
     anchors.verticalCenter: parent.verticalCenter

@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick 2.0
 
 Rectangle { // grey background root element
     id: viewer
@@ -6,31 +6,22 @@ Rectangle { // grey background root element
     width: 1000
     height: 800
     color: "#F5F5F5"
-    FontLoader { // load font
-        id: brandonRegular
-        source: "qrc:/fonts/brandonregular.ttf"
-    }
+    FontLoader { id: brandon; source: "qrc:/fonts/brandonregular.ttf"}
+    FontLoader { source: "qrc:/fonts/brandonmedium.ttf" }
+    FontLoader { source: "qrc:/fonts/brandonbold.ttf" }
+    FontLoader { source: "qrc:/fonts/brandonblack.ttf" }
 
     ListView {
         id: list
         objectName: "view"
         anchors.fill: parent
         model: songListModel
-        highlight: Highlight {}
-        highlightFollowsCurrentItem: false
         highlightMoveDuration: 0
-        header: Rectangle {
-            objectName: "header"
-            height: 50
-            width: 1000
-            SongText {
-                text: "Itunes Top 100"
-                anchors.leftMargin: 20
-            }
-        }
-
-        delegate: Song {
-
+        highlight: Highlight {}
+        header: Header {}
+        delegate: Song {}
+        Component.onCompleted: { // set initial index to none
+            currentIndex = -1
         }
         function setSong(idx) {
             list.currentIndex = idx

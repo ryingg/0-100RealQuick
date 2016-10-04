@@ -46,6 +46,8 @@ void ItunesList::buildSongList( QNetworkReply * reply) {
             while(reader.name()!="artist") reader.readNextStartElement(); // read artist
             QString artist = reader.readElementText();
             while(reader.name()!="image") reader.readNextStartElement(); // read image
+            reader.readNextStartElement(); // skip 55x55 image
+            reader.readNextStartElement(); // skip 60x60 image
             QString image_url = reader.readElementText();
             while(reader.name()!="collection") reader.readNextStartElement(); // read album
             while(reader.name()!="name") reader.readNextStartElement();
