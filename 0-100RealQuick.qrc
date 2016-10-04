@@ -3,5 +3,11 @@
         <file>view.qml</file>
         <file>Song.qml</file>
         <file>Highlight.qml</file>
+        <file>SongText.qml</file>
+        <file>fonts/brandonblack.ttf</file>
+        <file>fonts/brandonbold.ttf</file>
+        <file>fonts/brandonlight.ttf</file>
+        <file>fonts/brandonmedium.ttf</file>
+        <file>fonts/brandonregular.ttf</file>
     </qresource>
 </RCC>

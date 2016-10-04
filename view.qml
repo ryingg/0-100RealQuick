@@ -1,12 +1,15 @@
 import QtQuick 2.7
 
-Rectangle { // grey background
+Rectangle { // grey background root element
     id: viewer
-    property int active: -1 // which song is active
     property bool playing: false // paused or playing
     width: 1000
     height: 800
     color: "#F5F5F5"
+    FontLoader { // load font
+        id: brandonRegular
+        source: "qrc:/fonts/brandonregular.ttf"
+    }
 
     ListView {
         id: list
@@ -20,10 +23,8 @@ Rectangle { // grey background
             objectName: "header"
             height: 50
             width: 1000
-            Text {
+            SongText {
                 text: "Itunes Top 100"
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
                 anchors.leftMargin: 20
             }
         }
@@ -31,12 +32,11 @@ Rectangle { // grey background
         delegate: Song {
 
         }
-        function myQmlFunction(msg) {
-            active = -1
-            list.currentIndex = -1
-            playing = false
-            console.log("Got message:", msg)
-            return "some return value"
+        function setSong(idx) {
+            list.currentIndex = idx
+            if(idx == -1) // song played to end
+                playing = false
+            console.log("song index ", idx)
         }
     }
 

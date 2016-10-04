@@ -1,6 +1,12 @@
 #include "ituneslist.h"
-// itunes object made to parse itunes xml, can easily be refactored into other feeds
-// top itunes qobject with network access and song list object
+
+/* Top itunes list qobject with network access and song list object which can easily be refactored into other feeds
+ * Public methods: songList(), playerSongList()
+ * Signals: songListCreated()
+ * Creates temp file from URL with networkaccessmanager
+ * Then parses into Song object from temp file with QXmlStreamReader
+ * Appends to m_song_list and m_player_song_list for listviewmodel and qmediaplaylist respectively
+ */
 ItunesList::ItunesList(QObject *parent) : QObject(parent) {
     m_network_access_manager = new QNetworkAccessManager(this);
     connect(m_network_access_manager, SIGNAL(finished(QNetworkReply*)),this, SLOT(buildSongList(QNetworkReply*))); // build song list from reply

@@ -12,7 +12,10 @@
 
 const QString ITUNES_URL = "https://itunes.apple.com/us/rss/topsongs/limit=100/xml";
 
-// top itunes list qobject with network access and song list object
+/* Top itunes list qobject with network access and song list object
+ * Public methods: songList(), playerSongList()
+ * Signals: songListCreated()
+ */
 class ItunesList : public QObject {
     Q_OBJECT
 public:
