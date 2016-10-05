@@ -86,14 +86,14 @@ Rectangle {
         anchors.fill: parent
         onClicked: { // when clicking song entry
             playPause(index-1) // send signal to update play pause
-            if(viewer.playing && index == list.currentIndex+1) { // pause
+            if(viewer.playing == 1 && index == list.currentIndex+1) { // pause
                 list.currentIndex = -1
-                viewer.playing = false
+                viewer.playing = 2
             }
             else { // play song
                 list.currentIndex = index-1
                 viewer.active = list.currentIndex
-                viewer.playing = true
+                viewer.playing = 1
             }
         }
     }
