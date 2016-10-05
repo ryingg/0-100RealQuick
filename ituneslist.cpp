@@ -40,6 +40,7 @@ void ItunesList::buildSongList( QNetworkReply * reply) {
             while(reader.name()!="name") reader.readNextStartElement(); // read song title
             QString title = reader.readElementText();
             while(reader.name()!="link") reader.readNextStartElement(); // read itunes url
+            QString itunes_url = reader.attributes().value("href").toString();
             while(reader.name()!="contentType") reader.readNextStartElement(); // skip to next element
             while(reader.name()!="link") reader.readNextStartElement(); // read song url
             QString song_file_url = reader.attributes().value("href").toString();
@@ -52,7 +53,7 @@ void ItunesList::buildSongList( QNetworkReply * reply) {
             while(reader.name()!="collection") reader.readNextStartElement(); // read album
             while(reader.name()!="name") reader.readNextStartElement();
             QString album = reader.readElementText();
-            Song *song = new Song(QString::number(song_count), title, artist, album, image_url, song_file_url);
+            Song *song = new Song(QString::number(song_count), title, artist, album, image_url, itunes_url, song_file_url);
             m_song_list.append(song); // create song entry
             m_player_song_list.append(song);
         }

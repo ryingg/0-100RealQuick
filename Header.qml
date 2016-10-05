@@ -1,5 +1,6 @@
 import QtQuick 2.0
 
+/* Simple header */
 Item {
     height: 35
     width: parent.width

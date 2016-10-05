@@ -11,5 +11,10 @@
         <file>fonts/brandonregular.ttf</file>
         <file>Header.qml</file>
         <file>images/volume.png</file>
+        <file>Controller.qml</file>
+        <file>images/next.png</file>
+        <file>images/prev.png</file>
+        <file>images/play.png</file>
+        <file>images/pause.png</file>
     </qresource>
 </RCC>

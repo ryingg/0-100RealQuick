@@ -1,7 +1,9 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
-// song element
+/* Song delegate item in listview, with click handlers
+ * data populated from songListModel by Player from Itunes List
+ */
 Rectangle {
     id: song
     height: 50
@@ -82,18 +84,14 @@ Rectangle {
         text: album
         anchors.leftMargin: 632
     }
-    MouseArea { // clickable area signalling to player object's play pause slot
+    MouseArea { // clicking song sets viewer's play state, and pauses current or plays new song
         anchors.fill: parent
-        onClicked: { // when clicking song entry
-            playPause(index-1) // send signal to update play pause
-            if(viewer.playing == 1 && index == list.currentIndex+1) { // pause
-                list.currentIndex = -1
-                viewer.playing = 2
+        onClicked: {
+            if(viewer.getPlayState() == 1 && index == list.currentIndex+1) { // pause current song
+                viewer.setPauseState(index-1)
             }
-            else { // play song
-                list.currentIndex = index-1
-                viewer.active = list.currentIndex
-                viewer.playing = 1
+            else { // play selected song
+                viewer.setPlayState(index-1)
             }
         }
     }

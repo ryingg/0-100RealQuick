@@ -25,9 +25,9 @@ private:
     ItunesList *itunes_list; // itunes list object
 signals:
 private slots:
-    void play(QString index); // play or pause media
+    void playPause(qint32 index); // toggle play or pause media
     void finished(QMediaPlayer::State state); // finished media
-    void fadeout(qint64 position); // fade out song
+    void position(qint64 position); // fade out song
 };
 
 #endif // PLAYER_H
