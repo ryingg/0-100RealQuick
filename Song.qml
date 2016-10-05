@@ -7,6 +7,7 @@ Rectangle {
     height: 50
     width: parent.width
     color: "transparent"
+
     Rectangle { // bottom border
         height: 1
         width: parent.width
@@ -84,13 +85,14 @@ Rectangle {
     MouseArea { // clickable area signalling to player object's play pause slot
         anchors.fill: parent
         onClicked: { // when clicking song entry
-            playPause(index) // send signal to update play pause
+            playPause(index-1) // send signal to update play pause
             if(viewer.playing && index == list.currentIndex+1) { // pause
                 list.currentIndex = -1
                 viewer.playing = false
             }
             else { // play song
                 list.currentIndex = index-1
+                viewer.active = list.currentIndex
                 viewer.playing = true
             }
         }

@@ -26,10 +26,12 @@ Player::Player(QObject *parent) : QObject(parent) {
     ctxt->setContextProperty("songListModel", QVariant::fromValue(itunes_list->songList()));
     m_view->setSource(QUrl("qrc:/view.qml"));
     m_view->show();
+    QObject *root = m_view->rootObject();
+    connect(root, SIGNAL(playPauseView(QString)), this, SLOT(play(QString))); // signal when stopped playing
 
     foreach(Song* song, itunes_list->playerSongList()) // populate qmediaplaylist with songs from itunes_list
     {
-        connect(song, SIGNAL(playPause(QString)), this, SLOT(play(QString)));
+        connect(song, SIGNAL(playPause(QString)), this, SLOT(play(QString))); // signal when click song
         m_playlist->addMedia(QUrl(song->songFileUrl())); // create playlist entry
     }
     m_player->setPlaylist(m_playlist); // set playlist
@@ -43,7 +45,7 @@ QQuickView* Player::view() {
 }
 
 void Player::play(QString index) {
-    int list_index = index.toInt()-1;
+    int list_index = index.toInt();
     bool songChanged = false;
     if(m_playlist->currentIndex() != list_index) {
         qDebug() << "changed to "+index;
@@ -56,19 +58,18 @@ void Player::play(QString index) {
         m_player->play();
 }
 
-// change view if finished media
+// change view and set next song if finished media
 void Player::finished(QMediaPlayer::State state) {
-    qDebug("status changed");
+    qDebug("player state changed");
     QObject *root = m_view->rootObject();
     if(root) {
         qDebug()<<state;
         if(state == QMediaPlayer::StoppedState) {
-            qDebug("ended");
+            qDebug("song ended");
 
-            auto rect = root->findChild<QObject *>("view");
 //            QVariant returnedValue;
             QVariant index = m_playlist->currentIndex();
-            QMetaObject::invokeMethod(rect, "setSong",
+            QMetaObject::invokeMethod(root, "setSong", // set next song
 //                    Q_RETURN_ARG(QVariant, returnedValue),
                     Q_ARG(QVariant, index));
 //            qDebug() << "QML function returned:" << returnedValue.toString();
@@ -79,13 +80,12 @@ void Player::finished(QMediaPlayer::State state) {
 //fade out song if less than 2 seconds left
 void Player::fadeout(qint64 position) {
     int time_left = (m_player->duration()-position);
-    qDebug() << "time left "+QString::number(time_left);
-    if(time_left < 2000 && time_left > 0) {
+//    qDebug() << "time left "+QString::number(time_left);
+    if(time_left < 2000 && time_left > 0) { // vol stays for curr song
         qDebug()<<"lower volume "+QString::number(time_left/20);
         m_player->setVolume(time_left/20);
     }
-    else {
-        qDebug()<<"volume 100";
+    else { // vol resets for new song
         m_player->setVolume(100);
     }
 
