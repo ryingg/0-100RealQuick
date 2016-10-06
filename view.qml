@@ -4,15 +4,13 @@ import QtQuick 2.0
  * Key listeners enable play/pause with space, and song navigation with left/right
  *
  * Property Variables:
- * int playing the state of the view: 0 stopped, 1 playing, 2 paused
+ * int playstate the state of the view: 0 stopped, 1 playing, 2 paused
  * int active the current song of the view (maintained when true index is -1 while song paused)
  *
  * Signals:
  * playPauseView(int index) sends signal to Player object to pause or play song at index
  *
  * Functions:
- * getActive() returns active song
- * getPlayState() returns playing state: 0 stopped, 1 playing, 2 paused
  * setPlayState() sets view and vars to playing state
  * setPauseState() sets view and vars to paused state
  * setStopState() sets view and vars to stopped state
@@ -20,12 +18,14 @@ import QtQuick 2.0
 
 Rectangle { // grey background root element
     id: viewer
-    signal playPauseView(int index)
-    property int playing: 0 // state 0 stopped 1 playing 2 paused
+    signal playView(int index)
+    signal pauseView()
+    signal restartView()
+    property int playstate: 0 // state 0 stopped 1 playing 2 paused
     property int active: -1 // current song index
+    property bool playing: false // state for vol indicator view
     width: 1000
     height: 800
-    focus: true
 
     // load fonts
     FontLoader { id: brandon; source: "qrc:/fonts/brandonregular.ttf"}
@@ -45,71 +45,99 @@ Rectangle { // grey background root element
             model: songListModel
             highlightMoveDuration: 0
             highlight: Highlight {}
-            header: Header {}
+            header: Header { }
             delegate: Song {}
+            focus: true
             Component.onCompleted: { // set initial index to none
                 currentIndex = -1
             }
         }
     }
+
+    // controller bar
     Controller { id: controller; objectName: "controller" }
 
     // key listeners
+    Keys.onReturnPressed: { // play selected song
+        if(list.currentIndex == -1) // play first song if nothing highlighted
+            setPlayState(0)
+        else if(list.currentIndex == active) // restart current song
+            setRestartState()
+        else
+            setPlayState(list.currentIndex) // play new song
+    }
+    Keys.onEnterPressed: { // play selected song
+        if(list.currentIndex == -1) // play first song if nothing highlighted
+            setPlayState(0)
+        else if(list.currentIndex == active) // restart current song
+            setRestartState()
+        else
+            setPlayState(list.currentIndex) // play new song
+    }
     Keys.onSpacePressed: { // play pause
         if(active == -1) // play first song
-            setPlayState(0)
-        else if(playing==1) { // pause
-            setPauseState(active)
-        }
-        else { // play
+            if(list.currentIndex == -1) // if nothing highlighted
+                setPlayState(0)
+            else
+                setPlayState(list.currentIndex)
+        else if(playstate==1) // pause
+            setPauseState()
+        else // play
             setPlayState(active)
-        }
     }
     Keys.onRightPressed: { // next song
-        if(playing != 0) { // don't do anything in stopped position
+        if(list.currentIndex == -1) // play first song if none highlighted
+            setPlayState(0)
+        else { // play next song
             var next = (active+1)%list.count
+            list.currentIndex = next // highlight becomes playing song
             setPlayState(next)
         }
     }
     Keys.onLeftPressed: { // prev song
-        if(playing != 0 && active != 0) { // don't do anything in stopped position or first song
-            var prev = (active-1)%list.count
+        if(list.currentIndex == -1) // play first song if none highlighted
+            setPlayState(0)
+        else if(active == 0) // restart first song
+            setRestartState()
+        else { // play prev song
+            var prev = active-1
+            list.currentIndex = prev // highlight becomes playing song
             setPlayState(prev)
         }
     }
 
     // properly resize list when window height changes
     onHeightChanged: {
-        if(playing==0)
+        if(playstate==0)
             listcontainer.height = Qt.binding(function() { return viewer.height })
         else
             listcontainer.height = Qt.binding(function() { return viewer.height-controller.height })
     }
 
     // functions
-    function getActive() { // active song getter
-        return active
-    }
-    function getPlayState() { // playing getter
-        return playing
-    }
     function setPlayState(index){ // set play state
-        playPauseView(index) // send signal
+        playView(index) // send signal
         active = index; // set active index
-        playing = 1 // play state 1
-        list.currentIndex = index // set current index
+        playstate = 1 // play state 1
+        playing = true // state for vol indicator
         controller.setPlayState() // change controller view
     }
-    function setPauseState(index){ // set pause state
-        playPauseView(index) // send signal
-        list.currentIndex = -1 // disable highlight
-        playing = 2 // pause state 2
+    function setPauseState(){ // set pause state
+        pauseView() // send signal
+        playstate = 2 // pause state 2
+        playing = false // state for vol indicator
         controller.setPauseState() // change controller view
     }
     function setStopState(index){ // set stop state
         active = (active+1)%list.count; // queue next song with loop
-        playing = 0 // stop state 0
-        list.currentIndex = index // disable highlight
+        playstate = 0 // stop state 0
+        playing = false // state for vol indicator
         controller.setStopState() // hide controller
+    }
+    function setRestartState(){ // restart song, set play state
+        restartView() // send signal
+        playstate = 1 // play state 1
+        playing = true // state for vol indicator
+        controller.setPlayState() // change controller view
     }
 }

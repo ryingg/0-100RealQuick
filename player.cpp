@@ -11,6 +11,8 @@
 Player::Player(QObject *parent) : QObject(parent) {
     itunes_list = new ItunesList(); // itunes song list
     m_view = new QQuickView; // quick view
+    m_view->setResizeMode(QQuickView::SizeRootObjectToView);
+    m_view->setSource(QUrl("qrc:/view.qml"));
     m_player = new QMediaPlayer;
     m_player->setNotifyInterval(10); // shorten the notify interval for song progress
     m_player->setVolume(100); // set the volume
@@ -28,14 +30,15 @@ Player::Player(QObject *parent) : QObject(parent) {
     m_player->setPlaylist(m_playlist); // set playlist
     m_playlist->setCurrentIndex(-1); // to invoke songchange on initial play
 
-    m_view->setResizeMode(QQuickView::SizeRootObjectToView);
+    m_view->show(); // show view after songlist done
     QQmlContext *ctxt = m_view->rootContext();
     ctxt->setContextProperty("songListModel", QVariant::fromValue(itunes_list->songList())); // expose songList as a model in QML
-    m_view->setSource(QUrl("qrc:/view.qml"));
-    m_view->show();
     QObject *root = m_view->rootObject();
-    if(root)
-        connect(root, SIGNAL(playPauseView(qint32)), this, SLOT(playPause(qint32))); // signal when stopped playing
+    if(root) {
+        connect(root, SIGNAL(playView(qint32)), this, SLOT(play(qint32))); // set view play signal
+        connect(root, SIGNAL(pauseView()), this, SLOT(pause())); // set view pause signal
+        connect(root, SIGNAL(restartView()), this, SLOT(restart())); // set view restart signal
+    }
     connect(m_player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(finished(QMediaPlayer::State))); // signal when stopped playing
     connect(m_player, SIGNAL(positionChanged(qint64)), this, SLOT(position(qint64))); // signal when song position changed
 }
@@ -45,27 +48,32 @@ QQuickView* Player::view() {
     return m_view;
 }
 
-// toggle play pause
-void Player::playPause(qint32 index) {
-    bool songChanged = false;
-    if(m_playlist->currentIndex() != index) {
-        m_playlist->setCurrentIndex(index);
-        songChanged = true;
-        QObject *controller = m_view->rootObject()->findChild<QObject*>("controller");;
+// play song
+void Player::play(qint32 index) {
+    if(m_playlist->currentIndex() != index) { // new song
+        m_playlist->setCurrentIndex(index); // set index in playlist
+        QObject *controller = m_view->rootObject()->findChild<QObject*>("controller");; // set controller song info
         if(controller) {
             Song *curr_song = itunes_list->playerSongList()[index];
             QVariant title = curr_song->title();
             QVariant artist = curr_song->artist();
             QVariant url = curr_song->itunesUrl();
-            qDebug() << "song changed to "+QString::number(index)+" "+title.toString()+" - "+artist.toString();
+//            qDebug() << "song changed to "+QString::number(index)+" "+title.toString()+" - "+artist.toString();
             QMetaObject::invokeMethod(controller, "setSongInfo", Q_ARG(QVariant, title), Q_ARG(QVariant, artist), Q_ARG(QVariant, url));
         }
     }
+    m_player->play();
+}
 
-    if(!songChanged && m_player->state() == 1)
-        m_player->pause();
-    else
-        m_player->play();
+// pause song
+void Player::pause() {
+    m_player->pause();
+}
+
+// restart song
+void Player::restart() {
+    m_player->setPosition(0);
+    m_player->play();
 }
 
 // change view and set next song if finished media
@@ -88,7 +96,7 @@ void Player::finished(QMediaPlayer::State state) {
 //fade out song if less than 2 seconds left, update progress bar
 void Player::position(qint64 position) {
     int time_left = (m_player->duration()-position);
-    QObject *controller = m_view->rootObject()->findChild<QObject*>("controller");;
+    QObject *controller = m_view->rootObject()->findChild<QObject*>("controller");
     if(controller) {
         int duration = m_player->duration(); //calculate % song finished
         float percent = 0;

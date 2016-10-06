@@ -28,7 +28,9 @@ Rectangle {
     MouseArea { // prevent click through list
         anchors.fill:parent
     }
-    MouseArea { // progress bar
+
+    // progress bar
+    MouseArea {
         width: parent.width
         height: 20
         anchors.top: parent.top
@@ -55,7 +57,9 @@ Rectangle {
             anchors.top: progressbackground.top
         }
     }
-    MouseArea { // prev button
+
+    // prev button
+    MouseArea {
         id: prev_button
         width: 36
         height: 36
@@ -64,8 +68,9 @@ Rectangle {
         anchors.topMargin: 20
         anchors.leftMargin: 12
         onClicked: {
-            if(playing != 0 && active != 0) { // don't do anything in stopped position or first song
-                var prev = (active-1)%list.count
+            if(viewer.playstate != 0 && viewer.active != 0) { // don't do anything in stopped position or first song
+                var prev = (viewer.active-1)%list.count
+                list.currentIndex = prev // highlight becomes playing song
                 viewer.setPlayState(prev)
             }
         }
@@ -78,7 +83,9 @@ Rectangle {
             anchors.leftMargin: 12
         }
     }
-    MouseArea { // pause button
+
+    // pause button
+    MouseArea {
         id: pause_button
         width: 36
         height: 36
@@ -86,7 +93,7 @@ Rectangle {
         anchors.left: prev_button.right
         visible: false
         onClicked: {
-            viewer.setPauseState(viewer.getActive())
+            viewer.setPauseState(viewer.active)
             setPauseState()
         }
         Image {
@@ -98,14 +105,16 @@ Rectangle {
             anchors.leftMargin: 12
         }
     }
-    MouseArea { // play button
+
+    // play button
+    MouseArea {
         id: play_button
         width: 36
         height: 36
         anchors.top: prev_button.top
         anchors.left: prev_button.right
         onClicked: {
-            viewer.setPlayState(viewer.getActive())
+            viewer.setPlayState(viewer.active)
             setPlayState()
         }
         Image {
@@ -117,7 +126,9 @@ Rectangle {
             anchors.leftMargin: 12
         }
     }
-    MouseArea { // next button
+
+    // next button
+    MouseArea {
         id: next_button
         width: 36
         height: 36
@@ -125,8 +136,9 @@ Rectangle {
         anchors.left: prev_button.right
         anchors.leftMargin: 36
         onClicked: {
-            if(playing != 0) { // don't do anything in stopped position
-                var next = (active+1)%list.count
+            if(viewer.playstate != 0) { // don't do anything in stopped position
+                var next = (viewer.active+1)%list.count
+                list.currentIndex = next // highlight becomes playing song
                 viewer.setPlayState(next)
             }
         }
@@ -139,7 +151,9 @@ Rectangle {
             anchors.leftMargin: 12
         }
     }
-    MouseArea { // song title
+
+    // song info
+    MouseArea {
         id: song_info_controller
         width: 100
         height: 50
@@ -171,7 +185,9 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }
-    states: [ // states of view
+
+    // states of view
+    states: [
         State {
             name: "PLAY"
             PropertyChanges {
@@ -198,6 +214,8 @@ Rectangle {
             }
         }
     ]
+
+    // controller animations
     transitions: [
         Transition {
             from: "STOP"
@@ -236,6 +254,8 @@ Rectangle {
             }
         }
     ]
+
+    // functions
     function setPlayState(){
         state = "PLAY"
     }
