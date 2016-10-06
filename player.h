@@ -28,7 +28,6 @@ private slots:
     void play(qint32 index); // play media
     void pause(); // pause media
     void restart(); // pause media
-//    void playPause(qint32 index); // toggle play or pause media
     void finished(QMediaPlayer::State state); // finished media
     void position(qint64 position); // fade out song
 };

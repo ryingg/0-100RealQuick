@@ -11,8 +11,6 @@
 Player::Player(QObject *parent) : QObject(parent) {
     itunes_list = new ItunesList(); // itunes song list
     m_view = new QQuickView; // quick view
-    m_view->setResizeMode(QQuickView::SizeRootObjectToView);
-    m_view->setSource(QUrl("qrc:/view.qml"));
     m_player = new QMediaPlayer;
     m_player->setNotifyInterval(10); // shorten the notify interval for song progress
     m_player->setVolume(100); // set the volume
@@ -30,14 +28,16 @@ Player::Player(QObject *parent) : QObject(parent) {
     m_player->setPlaylist(m_playlist); // set playlist
     m_playlist->setCurrentIndex(-1); // to invoke songchange on initial play
 
-    m_view->show(); // show view after songlist done
+    m_view->setResizeMode(QQuickView::SizeRootObjectToView);
     QQmlContext *ctxt = m_view->rootContext();
     ctxt->setContextProperty("songListModel", QVariant::fromValue(itunes_list->songList())); // expose songList as a model in QML
+    m_view->setSource(QUrl("qrc:/view.qml"));
+    m_view->show();
     QObject *root = m_view->rootObject();
     if(root) {
-        connect(root, SIGNAL(playView(qint32)), this, SLOT(play(qint32))); // set view play signal
-        connect(root, SIGNAL(pauseView()), this, SLOT(pause())); // set view pause signal
-        connect(root, SIGNAL(restartView()), this, SLOT(restart())); // set view restart signal
+        connect(root, SIGNAL(playView(qint32)), this, SLOT(play(qint32))); // view play signal
+        connect(root, SIGNAL(pauseView()), this, SLOT(pause())); // view pause signal
+        connect(root, SIGNAL(restartView()), this, SLOT(restart())); // view restart signal
     }
     connect(m_player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(finished(QMediaPlayer::State))); // signal when stopped playing
     connect(m_player, SIGNAL(positionChanged(qint64)), this, SLOT(position(qint64))); // signal when song position changed
