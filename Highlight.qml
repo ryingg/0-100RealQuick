@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-/* list current highlight element */
+/* highlighted list element */
 Item {
     Rectangle {
         color: "#FCFCFC"

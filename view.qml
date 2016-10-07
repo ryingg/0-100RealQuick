@@ -23,7 +23,6 @@ Rectangle { // grey background root element
     signal restartView()
     property int playstate: 0 // state 0 stopped 1 playing 2 paused
     property int active: -1 // current song index
-    property bool playing: false // state for vol indicator view
     width: 1000
     height: 800
 
@@ -35,7 +34,7 @@ Rectangle { // grey background root element
 
     // listview container
     Rectangle {
-        id: listcontainer
+        id: list_container
         width: parent.width
         height: parent.height
         color: "#F5F5F5"
@@ -109,35 +108,34 @@ Rectangle { // grey background root element
     // properly resize list when window height changes
     onHeightChanged: {
         if(playstate==0)
-            listcontainer.height = Qt.binding(function() { return viewer.height })
+            list_container.height = Qt.binding(function() { return viewer.height })
         else
-            listcontainer.height = Qt.binding(function() { return viewer.height-controller.height })
+            list_container.height = Qt.binding(function() { return viewer.height-controller.height })
     }
 
     // functions
+    function setActive(index) { // set active song index
+        active = index
+    }
     function setPlayState(index){ // set play state
         playView(index) // send signal
-        active = index; // set active index
         playstate = 1 // play state 1
-        playing = true // state for vol indicator
         controller.setPlayState() // change controller view
     }
     function setPauseState(){ // set pause state
         pauseView() // send signal
         playstate = 2 // pause state 2
-        playing = false // state for vol indicator
         controller.setPauseState() // change controller view
     }
-    function setStopState(index){ // set stop state
-        active = (active+1)%list.count; // queue next song with loop
+    function setStopState(){ // set stop state
+        active = (active+1)%list.count // queue next song with loop, independent of shuffle
         playstate = 0 // stop state 0
-        playing = false // state for vol indicator
+        list.currentIndex = active
         controller.setStopState() // hide controller
     }
     function setRestartState(){ // restart song, set play state
         restartView() // send signal
         playstate = 1 // play state 1
-        playing = true // state for vol indicator
         controller.setPlayState() // change controller view
     }
 }

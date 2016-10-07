@@ -25,10 +25,16 @@ Item {
             color: "#B3B3B3"
             anchors.leftMargin: 632
         }
-        Item { // logo
+        MouseArea { // logo
+            height: 30
+            width: 162
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 10
+            cursorShape: Qt.PointingHandCursor
+            onClicked: {
+                Qt.openUrlExternally("https://www.linkedin.com/in/ryingg")
+            }
             Text {
                 font.family: brandon.name
                 font.weight: Font.Medium

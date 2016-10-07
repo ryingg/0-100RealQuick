@@ -16,5 +16,7 @@
         <file>images/prev.png</file>
         <file>images/play.png</file>
         <file>images/pause.png</file>
+        <file>images/autoplayenable.png</file>
+        <file>images/autoplaydisable.png</file>
     </qresource>
 </RCC>

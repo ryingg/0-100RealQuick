@@ -19,9 +19,11 @@ Rectangle {
     id: control
     property string itunes_url: ""
     property int progress: 0
+    signal setPositionView(real percent)
+    signal setAutoplayView(bool autoplay)
     width: parent.width
     height: 75
-    color:"#E9E9E9"
+    color: "#E9E9E9"
     anchors.top: parent.bottom
     anchors.topMargin: -75
     state: "STOP"
@@ -31,30 +33,76 @@ Rectangle {
 
     // progress bar
     MouseArea {
+        id: progress_area
+        property int posX: 0 // keep track of mouseX in case mouse leaves window
         width: parent.width
-        height: 20
+        height: 12
         anchors.top: parent.top
-        anchors.topMargin: -8
+//        anchors.topMargin: -4
         hoverEnabled: true
-        onPositionChanged: {
+        onEntered: { // enlarge mousearea and bar
+            enlarge.start()
         }
-        onClicked: {
-            console.log("position "+mouseX)
+        onExited: { // shrink mousearea and bar
+            shrink.start()
+        }
+        onPositionChanged: { // hold and drag position
+            if (pressed) {
+                progress_area.height = viewer.height // set draggable area to entire window
+                progress_area.anchors.topMargin = control.height - viewer.height // adjust margins
+                progress_background.anchors.topMargin = viewer.height - control.height
+                progress_bar.visible = false // hide actual progress
+                progress_clicker.visible = true
+                progress_clicker.width = mouseX // show dragged progress
+            }
+        }
+        onReleased: { // release drag, still works if mouse drags out of window
+            var percent = mouseX/progress_background.width // update view
+            setPositionView(percent) // signal player to update position
+            progress = mouseX // progress updates after player signals, change here first to prevent old progress flash
+            progress_area.height = 12
+            progress_area.anchors.topMargin = 0
+            progress_background.anchors.topMargin = 0
+            progress_bar.visible = true
+            progress_clicker.visible = false
         }
         Rectangle {
-            id: progressbackground
-            color:"#C1C1C1"
+            id: progress_background
+            color: "#C1C1C1"
             height: 4
             width: parent.width
             anchors.top: parent.top
-            anchors.topMargin: 8
+            NumberAnimation {
+                id: enlarge
+                target: progress_background
+                properties: "height"
+                to: 12
+                duration: 200
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                id: shrink
+                target: progress_background
+                properties: "height"
+                to: 4
+                duration: 200
+                easing.type: Easing.InOutQuad
+            }
         }
         Rectangle {
-            id: progressbar
-            color:"#7B7B7B"
-            height: 4
+            id: progress_bar
+            color: "#7B7B7B"
+            height: progress_background.height
             width: progress
-            anchors.top: progressbackground.top
+            anchors.top: progress_background.top
+        }
+        Rectangle {
+            id: progress_clicker
+            color: "#7B7B7B"
+            visible: false
+            height: progress_background.height
+            width: progress
+            anchors.top: progress_background.top
         }
     }
 
@@ -152,6 +200,48 @@ Rectangle {
         }
     }
 
+    // autoplay button
+    MouseArea {
+        id: autoplay_button
+        width: 36
+        height: 36
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: 20
+        anchors.rightMargin: 14
+        onClicked: {
+            if(autoplay_disable.visible) { // enable autoplay
+                setAutoplayView(true) // send signal to player
+                autoplay_disable.visible = false
+                autoplay_enable.visible = true
+            }
+            else { // disable autoplay
+                setAutoplayView(false) // send signal to player
+                autoplay_disable.visible = true
+                autoplay_enable.visible = false
+            }
+        }
+        Image {
+            id: autoplay_disable
+            source: "qrc:/images/autoplaydisable.png"
+            width: 17
+            height: 23
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 9
+        }
+        Image {
+            id: autoplay_enable
+            source: "qrc:/images/autoplayenable.png"
+            width: 17
+            height: 23
+            visible: false
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 9
+        }
+    }
+
     // song info
     MouseArea {
         id: song_info_controller
@@ -159,7 +249,6 @@ Rectangle {
         height: 50
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             Qt.openUrlExternally(itunes_url)
@@ -209,7 +298,7 @@ Rectangle {
                 anchors.topMargin: 0
             }
             PropertyChanges { // keep bar darkened when stopping
-                target: progressbackground
+                target: progress_background
                 color: "#7B7B7B"
             }
         }
@@ -229,7 +318,7 @@ Rectangle {
             }
             PropertyAnimation { // resize list container
                 easing.type: Easing.InOutCubic;
-                target: listcontainer;
+                target: list_container;
                 property: "height";
                 to: viewer.height-controller.height;
                 duration: 500
@@ -247,7 +336,7 @@ Rectangle {
             }
             PropertyAnimation { // resize list container
                 easing.type: Easing.InOutCubic;
-                target: listcontainer;
+                target: list_container;
                 property: "height";
                 to: viewer.height;
                 duration: 500
@@ -272,6 +361,6 @@ Rectangle {
         itunes_url = url
     }
     function setPosition(percent) { // bind progress bar position width*percent
-        progress = Qt.binding(function() { return parseInt(progressbackground.width*percent) })
+        progress = Qt.binding(function() { return parseInt(progress_background.width*percent) })
     }
 }

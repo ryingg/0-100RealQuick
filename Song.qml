@@ -8,7 +8,7 @@ Rectangle {
     id: song
     height: 50
     width: parent.width
-    color: index == viewer.active+1 ? "#E9E9E9" : "transparent" // darker if active
+    color: index == viewer.active+1 && viewer.playstate != 0 ? "#E9E9E9" : "transparent" // darker if active and not stopped
 
     Rectangle { // bottom border
         height: 1
@@ -32,7 +32,7 @@ Rectangle {
         source: "qrc:/images/volume.png"
         width: 16
         height: 12
-        visible: viewer.playing && index == viewer.active+1 // visible if active song and playing
+        visible: viewer.playstate == 1 && index == viewer.active+1 // visible if active song and playing
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 75
@@ -40,101 +40,134 @@ Rectangle {
     SongText { // index
         text: index
         color: "#888888"
-        visible: !(viewer.playing && index == viewer.active+1) // visible if not active song or playing
+        visible: !(viewer.playstate == 1 && index == viewer.active+1) // visible if not active song or playing
         anchors.leftMargin: 75
     }
     SongText { // song title
         id: song_title
+        text: title
+        anchors.leftMargin: 114
         Component.onCompleted: { // if text longer than max width, fade text
             if(song_title.width > 280) { // max width
                 song_active.start = Qt.point(220, 0) //max width - 60
-                song_highlight.start = Qt.point(220, 0) //max width - 60
+                song_highlight.start = Qt.point(220, 0)
+                song_default.start = Qt.point(220, 0)
             }
         }
-        LinearGradient { // fade away long text for active song
-            id: song_active
+        LinearGradient { // fade long text for default
+            id: song_default
             anchors.fill: parent
             start: Qt.point(270, 0) //max width - 10
             end: Qt.point(270, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: viewer.playing && index == viewer.active+1 ? "#E9E9E9" : "#F5F5F5" }
+                GradientStop { position: 1.0; color: index != viewer.active+1 ? "#F5F5F5" : "transparent" }
             }
         }
-        LinearGradient { // fade away long text for for highlight inactive song
+        LinearGradient { // fade long text for highlight
             id: song_highlight
             anchors.fill: parent
             start: Qt.point(270, 0) //max width - 10
             end: Qt.point(270, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && !(viewer.playing && index == viewer.active+1) ? "#FAFAFA" : "transparent" }
+                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FCFCFC" : "transparent" } //FIX
             }
         }
-        text: title
-        anchors.leftMargin: 114
+        LinearGradient { // fade long text for active
+            id: song_active
+            anchors.fill: parent
+            start: Qt.point(270, 0) //max width - 10
+            end: Qt.point(270, 0)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 1.0; color: viewer.playstate != 0 && index == viewer.active+1 ? "#E9E9E9" : "transparent" }
+            }
+        }
     }
     SongText { // artist
         id: artist_title
+        text: artist
+        anchors.leftMargin: 407
         Component.onCompleted: { // if text longer than max width, fade text
             if(artist_title.width > 220) {
                 artist_active.start = Qt.point(160, 0)
                 artist_highlight.start = Qt.point(160, 0)
+                artist_default.start = Qt.point(160, 0)
             }
         }
-        LinearGradient { // fade away long text for active song
-            id: artist_active
+        LinearGradient { // fade long text for highlight inactive
+            id: artist_default
             anchors.fill: parent
             start: Qt.point(210, 0) //max width - 10
             end: Qt.point(210, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: viewer.playing && index == viewer.active+1 ? "#E9E9E9" : "#F5F5F5" }
+                GradientStop { position: 1.0; color: index != viewer.active+1 ? "#F5F5F5" : "transparent" }
             }
         }
-        LinearGradient { // fade away long text for for highlight inactive song
+        LinearGradient { // fade long text for highlight inactive
             id: artist_highlight
             anchors.fill: parent
             start: Qt.point(210, 0) //max width - 10
             end: Qt.point(210, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && !(viewer.playing && index == viewer.active+1) ? "#FAFAFA" : "transparent" }
+                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FCFCFC" : "transparent" }
             }
         }
-        text: artist
-        anchors.leftMargin: 407
+        LinearGradient { // fade long text for active
+            id: artist_active
+            anchors.fill: parent
+            start: Qt.point(210, 0) //max width - 10
+            end: Qt.point(210, 0)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 1.0; color: viewer.playstate != 0 && index == viewer.active+1 ? "#E9E9E9" : "transparent" }
+            }
+        }
     }
     SongText { // album title
         id: album_title
+        text: album
+        anchors.leftMargin: 632
         Component.onCompleted: { // if text longer than max width, fade text
             if(album_title.width > 360) {
                 album_active.start = Qt.point(300, 0)
                 album_highlight.start = Qt.point(300, 0)
+                album_default.start = Qt.point(300, 0)
             }
         }
-        LinearGradient { // fade away long text for active song
-            id: album_active
+        LinearGradient { // fade long text for default
+            id: album_default
             anchors.fill: parent
             start: Qt.point(350, 0) //max width - 10
             end: Qt.point(350, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: viewer.playing && index == viewer.active+1 ? "#E9E9E9" : "#F5F5F5" }
+                GradientStop { position: 1.0; color: index != viewer.active+1 ? "#F5F5F5" : "transparent" }
             }
         }
-        LinearGradient { // fade away long text for for highlight inactive song
+        LinearGradient { // fade long text for highlight
             id: album_highlight
             anchors.fill: parent
             start: Qt.point(350, 0) //max width - 10
             end: Qt.point(350, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && !(viewer.playing && index == viewer.active+1) ? "#FAFAFA" : "transparent" }
+                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FCFCFC" : "transparent" }
             }
         }
-        text: album
-        anchors.leftMargin: 632
+        LinearGradient { // fade long text for active
+            id: album_active
+            anchors.fill: parent
+            start: Qt.point(350, 0) //max width - 10
+            end: Qt.point(350, 0)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 1.0; color: viewer.playstate != 0 && index == viewer.active+1 ? "#E9E9E9" : "transparent" }
+            }
+        }
     }
 
     // click listener to play new song / pause current song
