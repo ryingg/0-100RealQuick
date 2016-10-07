@@ -192,28 +192,30 @@ Rectangle {
     /* click handler for select and play */
     MouseArea {
         anchors.fill: parent
-        onDoubleClicked: { // play song
-            if(index == viewer.active+1) { // restart current song
-                viewer.setRestartState(active)
-            }
-            else { // play selected song
-                list.currentIndex = index-1 // set current index
-                viewer.setPlayState(index-1)
+        onDoubleClicked: { // play song if tap_to_play disabled
+            if(!viewer.tap_to_play) {
+                if(index == viewer.active+1) { // restart current song
+                    viewer.setRestartState(active)
+                }
+                else { // play selected song
+                    list.currentIndex = index-1 // set current index
+                    viewer.setPlayState(index-1)
+                }
             }
         }
-        onClicked: { // highlight selected song
-            list.currentIndex = index-1
+        onClicked: {
+            if(!viewer.tap_to_play) // highlight selected song
+                list.currentIndex = index-1
+            else { // play song if tap_to_play enabled
+                if(viewer.playstate == 1 && index == viewer.active+1) { // pause current song
+                    viewer.setPauseState()
+                }
+                else { // play selected song
+                    list.currentIndex = index-1 // set current index
+                    viewer.setPlayState(index-1)
+                }
+            }
         }
-//        // optimized for touch click listener to play new song / pause current song
-//        onClicked: {
-//            if(viewer.playstate == 1 && index == viewer.active+1) { // pause current song
-//                viewer.setPauseState()
-//            }
-//            else { // play selected song
-//                list.currentIndex = index-1 // set current index
-//                viewer.setPlayState(index-1)
-//            }
-//        }
     }
 }
 

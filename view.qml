@@ -6,6 +6,8 @@ import QtQuick 2.0
  * Property Variables:
  * int playstate    the state of the view: 0 stopped, 1 playing, 2 paused
  * int active       the currently active song
+ * tap_to_play      true to single click to play
+ *                  false to double click to play and single click to select
  *
  * Signals:
  * playView(int index)  sends signal to Player object to play song at index
@@ -23,6 +25,7 @@ Rectangle {
     id: viewer
     property int playstate: 0
     property int active: -1
+    property bool tap_to_play: false // true optimized for touchscreens
     signal playView(int index)
     signal pauseView()
     signal restartView(int index)

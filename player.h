@@ -15,8 +15,8 @@
  * Private Slots:
  *      play(qint32)                    play song at index
  *      pause()                         pause song
- *      restart(qint32)                       restart song at index
- *      setSongView()      set QML view to current song
+ *      restart(qint32)                 restart song at index
+ *      setSongView()                   set QML view to current song
  *      finished(QMediaPlayer::State)   set stop state
  *      position(qint64)                set QML view progress bar position and adj volume
  *      setPosition(qreal)              set QMediaPlayer position from view
