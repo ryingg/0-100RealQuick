@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-/* default text attributes */
+/* Default text attributes */
 Text {
     font.family: brandon.name
     font.pointSize: 14

@@ -1,34 +1,45 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
-/* Song delegate item in listview, with click handlers
- * data populated from songListModel by Player from Itunes List
+/* Song delegate item in ListView with click handlers and info
+ * Data populated from songListModel by Player from ItunesList
+ * Gradients hide long text
+ * Volume indicator while playing
+ * Highlight if highlighted and Shade if active
  */
+
 Rectangle {
     id: song
     height: 50
     width: parent.width
-    color: index == viewer.active+1 && viewer.playstate !== 0 ? "#E9E9E9" : "transparent" // darker if active and not stopped
+    color: index == viewer.active+1 && viewer.playstate !== 0 ? "#E9E9E9" : "transparent" // shaded if active
 
-    Rectangle { // bottom border
+    /* bottom border */
+    Rectangle {
         height: 1
         width: parent.width
         color: "#E9E9E9"
         anchors.bottom: parent.bottom
     }
-    Rectangle { // album filler
+
+    /* album filler */
+    Rectangle {
         height: 50
         width: 50
         color: "#E9E9E9"
         anchors.left: parent.left
     }
-    Image { // album art
+
+    /* album art */
+    Image {
         height: 50
         width: 50
         source: imageUrl
         anchors.left: parent.left
     }
-    Image { // volume indicator
+
+    /* volume indicator */
+    Image {
         source: "qrc:/images/volume.png"
         width: 16
         height: 12
@@ -37,13 +48,17 @@ Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: 75
     }
-    SongText { // index
+
+    /* index */
+    SongText {
         text: index
         color: "#888888"
         visible: !(viewer.playstate == 1 && index == viewer.active+1) // visible if not active song or playing
         anchors.leftMargin: 75
     }
-    SongText { // song title
+
+    /* song title */
+    SongText {
         id: song_title
         text: title
         anchors.leftMargin: 114
@@ -85,7 +100,9 @@ Rectangle {
             }
         }
     }
-    SongText { // artist
+
+    /* artist */
+    SongText {
         id: artist_title
         text: artist
         anchors.leftMargin: 407
@@ -127,7 +144,9 @@ Rectangle {
             }
         }
     }
-    SongText { // album title
+
+    /* album title */
+    SongText {
         id: album_title
         text: album
         anchors.leftMargin: 632
@@ -170,12 +189,12 @@ Rectangle {
         }
     }
 
-    // click listener to play new song / pause current song
+    /* click handler for select and play */
     MouseArea {
         anchors.fill: parent
-        onDoubleClicked: {
+        onDoubleClicked: { // play song
             if(index == viewer.active+1) { // restart current song
-                viewer.setRestartState()
+                viewer.setRestartState(active)
             }
             else { // play selected song
                 list.currentIndex = index-1 // set current index
@@ -185,8 +204,8 @@ Rectangle {
         onClicked: { // highlight selected song
             list.currentIndex = index-1
         }
-
-//        onClicked: { // optimized for touch screens
+//        // optimized for touch click listener to play new song / pause current song
+//        onClicked: {
 //            if(viewer.playstate == 1 && index == viewer.active+1) { // pause current song
 //                viewer.setPauseState()
 //            }

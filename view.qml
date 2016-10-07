@@ -1,38 +1,41 @@
 import QtQuick 2.0
 
-/* Main player view with listview of songs from songListModel and music controller bar
- * Key listeners enable play/pause with space, and song navigation with left/right
+/* Main player view with ListView of songs from songListModel and music Controller bar
+ * Key handlers enable controls with space, enter/return, and arrow keys
  *
  * Property Variables:
- * int playstate the state of the view: 0 stopped, 1 playing, 2 paused
- * int active the current song of the view (maintained when true index is -1 while song paused)
+ * int playstate    the state of the view: 0 stopped, 1 playing, 2 paused
+ * int active       the currently active song
  *
  * Signals:
- * playPauseView(int index) sends signal to Player object to pause or play song at index
+ * playView(int index)  sends signal to Player object to play song at index
+ * pauseView()          sends signal to Player object to pause song
+ * restart()            sends signal to Player to restart song
  *
  * Functions:
- * setPlayState() sets view and vars to playing state
- * setPauseState() sets view and vars to paused state
- * setStopState() sets view and vars to stopped state
+ * setActive(index) set active index and list index
+ * setPlayState()   set view playstate to playing
+ * setPauseState()  set view playstate to pause
+ * setStopState()   set view playstate to stop
  */
 
-Rectangle { // grey background root element
+Rectangle {
     id: viewer
+    property int playstate: 0
+    property int active: -1
     signal playView(int index)
     signal pauseView()
-    signal restartView()
-    property int playstate: 0 // state 0 stopped 1 playing 2 paused
-    property int active: -1 // current song index
+    signal restartView(int index)
     width: 1000
     height: 800
 
-    // load fonts
+    /* load fonts */
     FontLoader { id: brandon; source: "qrc:/fonts/brandonregular.ttf"}
     FontLoader { source: "qrc:/fonts/brandonmedium.ttf" }
     FontLoader { source: "qrc:/fonts/brandonbold.ttf" }
     FontLoader { source: "qrc:/fonts/brandonblack.ttf" }
 
-    // listview container
+    /* listview container */
     Rectangle {
         id: list_container
         width: parent.width
@@ -53,23 +56,26 @@ Rectangle { // grey background root element
         }
     }
 
-    // controller bar
+    /* controller bar */
     Controller { id: controller; objectName: "controller" }
 
-    // key listeners
+    /* key listeners */
     Keys.onReturnPressed: { // play selected song
-        if(active == -1) // play first song if nothing highlighted
+        if(active == -1) {// play first song if nothing highlighted
             setPlayState(0)
-        else if(list.currentIndex == active) // restart current song
-            setRestartState()
-        else
+        }
+        else if(list.currentIndex == active) { // restart current song
+            setRestartState(active)
+        }
+        else {
             setPlayState(list.currentIndex) // play new song
+        }
     }
     Keys.onEnterPressed: { // play selected song
         if(active == -1) // play first song if nothing highlighted
             setPlayState(0)
         else if(list.currentIndex == active) // restart current song
-            setRestartState()
+            setRestartState(active)
         else
             setPlayState(list.currentIndex) // play new song
     }
@@ -88,7 +94,7 @@ Rectangle { // grey background root element
         if(active == -1) // play first song if none highlighted
             setPlayState(0)
         else if(active == 0) // restart first song
-            setRestartState()
+            setRestartState(active)
         else { // play prev song
             var prev = active-1
             list.currentIndex = prev // highlight becomes playing song
@@ -105,7 +111,7 @@ Rectangle { // grey background root element
         }
     }
 
-    // properly resize list when window height changes
+    /* properly resize list when window height changes */
     onHeightChanged: {
         if(playstate==0)
             list_container.height = Qt.binding(function() { return viewer.height })
@@ -113,30 +119,48 @@ Rectangle { // grey background root element
             list_container.height = Qt.binding(function() { return viewer.height-controller.height })
     }
 
-    // functions
-    function setActive(index) { // set active song index
+    /* set active index and list index to move highlight
+     * params:  index, the active index to set
+     */
+    function setActive(index) {
         active = index
-        list.currentIndex = active // move highlight
+        list.currentIndex = active
     }
-    function setPlayState(index){ // set play state
-        playView(index) // send signal
-        playstate = 1 // play state 1
-        controller.setPlayState() // change controller view
+
+    /* set view playstate to playing and signals Player
+     * params:  index, the song to play
+     */
+    function setPlayState(index){
+        playView(index)
+        playstate = 1
+        controller.setPlayState()
     }
-    function setPauseState(){ // set pause state
-        pauseView() // send signal
-        playstate = 2 // pause state 2
-        controller.setPauseState() // change controller view
+
+    /* set view playstate to pause and signals Player
+     * params:  none
+     */
+    function setPauseState(){
+        pauseView()
+        playstate = 2
+        controller.setPauseState()
     }
-    function setStopState(){ // set stop state
+
+    /* set view playstate to stop and signals Player
+     * params:  none
+     */
+    function setStopState(){
         active = (active+1)%list.count // queue next song with loop
-        playstate = 0 // stop state 0
+        playstate = 0
         list.currentIndex = active // move highlight
         controller.setStopState() // hide controller
     }
-    function setRestartState(){ // restart song, set play state
-        restartView() // send signal
-        playstate = 1 // play state 1
-        controller.setPlayState() // change controller view
+
+    /* set view playstate to playing and signals Player to restart song
+     * params:  none
+     */
+    function setRestartState(index){
+        restartView(index)
+        playstate = 1
+        controller.setPlayState()
     }
 }

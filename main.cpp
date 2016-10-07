@@ -11,5 +11,3 @@ int main(int argc, char ** argv) {
     (void)player; // suppress unused warning
     return app.exec();
 }
-
-

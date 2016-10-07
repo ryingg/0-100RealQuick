@@ -5,16 +5,21 @@ import QtQuick 2.0
  * Song info links to iTunes page
  *
  * Property Variables:
- * string itunes_url the itunes link of the current song
- * int progress the progress of the song played
+ * string itunes_url    the itunes link of the current song
+ * int progress         the progress of the song played
+ *
+ * Signals:
+ * setPositionView(real percent)    sends signal to Player object to set position
+ * setAutoPlayView(bool autoplay)   sends signal to Player object to set autoplay
  *
  * Functions:
- * setPlayState() sets controller view to playing state
- * setPauseState() sets controller view to paused state
- * setStopState() hides controller
- * setSongInfo() sets new song info view
- * setPosition() sets new progress bar position view
+ * setPlayState()                   sets view to playing state
+ * setPauseState()                  sets view to pause state
+ * setStopState()                   sets view to stop state and hide controller
+ * setSongInfo(song, artist, url)   sets view to new song info
+ * setPosition(percent)             binds view to new progress bar position
  */
+
 Rectangle {
     id: control
     property string itunes_url: ""
@@ -31,29 +36,27 @@ Rectangle {
         anchors.fill:parent
     }
 
-    // progress bar
+    /* progress bar */
     MouseArea {
         id: progress_area
         property int posX: 0 // keep track of mouseX in case mouse leaves window
         width: parent.width
         height: 12
         anchors.top: parent.top
-//        anchors.topMargin: -4
         hoverEnabled: true
-        onEntered: { // enlarge mousearea and bar
-            enlarge.start()
-        }
-        onExited: { // shrink mousearea and bar
-            shrink.start()
+        onEntered: enlarge.start() // enlarge mousearea and bar
+        onExited: shrink.start() // shrink mousearea and bar
+        onPressed: { // hide real progress bar and show false dragger
+            progress_bar.visible = false // hide real progress when dragging
+            progress_dragger.visible = true
+            progress_dragger.width = mouseX
         }
         onPositionChanged: { // hold and drag position
             if (pressed) {
                 progress_area.height = viewer.height // set draggable area to entire window
                 progress_area.anchors.topMargin = control.height - viewer.height // adjust margins
                 progress_background.anchors.topMargin = viewer.height - control.height
-                progress_bar.visible = false // hide actual progress
-                progress_clicker.visible = true
-                progress_clicker.width = mouseX // show dragged progress
+                progress_dragger.width = mouseX // update dragger progress
             }
         }
         onReleased: { // release drag, still works if mouse drags out of window
@@ -64,8 +67,9 @@ Rectangle {
             progress_area.anchors.topMargin = 0
             progress_background.anchors.topMargin = 0
             progress_bar.visible = true
-            progress_clicker.visible = false
+            progress_dragger.visible = false
         }
+        /* progress bar background */
         Rectangle {
             id: progress_background
             color: "#C1C1C1"
@@ -89,6 +93,7 @@ Rectangle {
                 easing.type: Easing.InOutQuad
             }
         }
+        /* progress bar foreground */
         Rectangle {
             id: progress_bar
             color: "#7B7B7B"
@@ -96,8 +101,9 @@ Rectangle {
             width: progress
             anchors.top: progress_background.top
         }
+        /* false bar foreground when dragging */
         Rectangle {
-            id: progress_clicker
+            id: progress_dragger
             color: "#7B7B7B"
             visible: false
             height: progress_background.height
@@ -106,7 +112,7 @@ Rectangle {
         }
     }
 
-    // prev button
+    /* prev button */
     MouseArea {
         id: prev_button
         width: 36
@@ -132,7 +138,7 @@ Rectangle {
         }
     }
 
-    // pause button
+    /* pause button */
     MouseArea {
         id: pause_button
         width: 36
@@ -154,7 +160,7 @@ Rectangle {
         }
     }
 
-    // play button
+    /* play button */
     MouseArea {
         id: play_button
         width: 36
@@ -175,7 +181,7 @@ Rectangle {
         }
     }
 
-    // next button
+    /* next button */
     MouseArea {
         id: next_button
         width: 36
@@ -200,7 +206,7 @@ Rectangle {
         }
     }
 
-    // autoplay button
+    /* autoplay button */
     MouseArea {
         id: autoplay_button
         width: 36
@@ -242,7 +248,7 @@ Rectangle {
         }
     }
 
-    // song info
+    /* song info */
     MouseArea {
         id: song_info_controller
         width: 100
@@ -275,7 +281,7 @@ Rectangle {
         }
     }
 
-    // states of view
+    /* states of view */
     states: [
         State {
             name: "PLAY"
@@ -304,7 +310,7 @@ Rectangle {
         }
     ]
 
-    // controller animations
+    /* controller animations */
     transitions: [
         Transition {
             from: "STOP"
@@ -344,23 +350,45 @@ Rectangle {
         }
     ]
 
-    // functions
+    /* sets view to playing state
+     * params:  none
+     */
     function setPlayState(){
         state = "PLAY"
     }
+
+    /* sets view to pause state
+     * params:  none
+     */
     function setPauseState(){
         state = "PAUSE"
     }
+
+    /* sets view to stop state and hide controller
+     * params:  none
+     */
     function setStopState(){
         state = "STOP"
     }
-    function setSongInfo(song, artist, url) { // set song, artist, and width of mousearea
+
+    /* sets view to new song info and width of mousearea
+     * params:
+     *      song, the new song name
+     *      artist, the new artist
+     *      url, the new song itunes link
+     */
+    function setSongInfo(song, artist, url) {
         song_title_controller.text = song
         artist_controller.text = artist
         song_info_controller.width = Math.max(song_title_controller.width, artist_controller.width) + 20
         itunes_url = url
     }
-    function setPosition(percent) { // bind progress bar position width*percent
+
+    /* binds view to new progress bar position percent*totalwidth
+     * params:
+     *      percent, the percent of song progress completed
+     */
+    function setPosition(percent) {
         progress = Qt.binding(function() { return parseInt(progress_background.width*percent) })
     }
 }

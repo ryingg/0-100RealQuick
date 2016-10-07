@@ -7,7 +7,7 @@
  * Private Slots:
  *      play(qint32)                    play song at index
  *      pause()                         pause song
- *      restart()                       restart current song
+ *      restart(qint32)                       restart song at index
  *      setSongView()      set QML view to current song
  *      finished(QMediaPlayer::State)   set stop state
  *      position(qint64)                set QML view progress bar position and adj volume
@@ -52,7 +52,7 @@ Player::Player(QObject *parent) : QObject(parent) {
         m_controller = root->findChild<QObject*>("controller");
         connect(root, SIGNAL(playView(qint32)), this, SLOT(play(qint32))); // view play signal
         connect(root, SIGNAL(pauseView()), this, SLOT(pause())); // view pause signal
-        connect(root, SIGNAL(restartView()), this, SLOT(restart())); // view restart signal
+        connect(root, SIGNAL(restartView(qint32)), this, SLOT(restart(qint32))); // view restart signal
         if(m_controller) {
             connect(m_controller, SIGNAL(setPositionView(qreal)), this, SLOT(setPosition(qreal))); // view position signal
             connect(m_controller, SIGNAL(setAutoplayView(bool)), this, SLOT(setAutoplay(bool))); // set autoplay signal
@@ -79,11 +79,14 @@ void Player::pause() {
     m_player->pause();
 }
 
-/* restart current song
- * params:  none
+/* restart song at index
+ * params:  index, the song index
  * return:  void
  */
-void Player::restart() {
+void Player::restart(qint32 index) {
+    if(m_playlist->currentIndex() != index) { // new song, if from stopped position
+        m_playlist->setCurrentIndex(index); // set index in playlist
+    }
     m_player->setPosition(0);
     m_player->play();
 }

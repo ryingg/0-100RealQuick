@@ -1,10 +1,10 @@
 import QtQuick 2.0
 
-/* highlighted list element */
+/* List highlight */
 Item {
     Rectangle {
         color: "#FCFCFC"
-        width: 3000 //resizing slow
+        width: parent.width
         height: parent.height
     }
 }
