@@ -13,6 +13,7 @@
  *      position(qint64)                set QML view progress bar position and adj volume
  *      setPosition(qreal)              set QMediaPlayer position from view
  *      setAutoPlay(bool)               set QMediaPlaylist autoplay
+ *      error()                         handle media error
  */
 
 /* Instantiates ItunesList, QMediaPlayer, QMediaPlaylist, signals/slots, and default settings */
@@ -38,6 +39,7 @@ Player::Player(QObject *parent) : QObject(parent) {
     connect(m_player, SIGNAL(currentMediaChanged(QMediaContent)), this, SLOT(setSongView())); // signal when stopped playing
     connect(m_player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(finished(QMediaPlayer::State))); // signal when stopped playing
     connect(m_player, SIGNAL(positionChanged(qint64)), this, SLOT(position(qint64))); // signal when song qmediaplayer position changed
+    connect(m_player, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(error())); // signal when qmediaplayer errors
 
     /* set song list as model for the QML view */
     m_view->setResizeMode(QQuickView::SizeRootObjectToView);
@@ -108,18 +110,18 @@ void Player::setSongView() {
             QVariant url = curr_song->itunesUrl();
             QMetaObject::invokeMethod(m_controller, "setSongInfo", Q_ARG(QVariant, title), Q_ARG(QVariant, artist), Q_ARG(QVariant, url));
         }
-
     }
 }
 
-/* set stop state and send signal to view
+/* set stop state and send signal to view if no error
  * params:  state, the QMediaPlayer state
  * return:  void
  */
 void Player::finished(QMediaPlayer::State state) {
-    QObject *root = m_view->rootObject();
-    if(state == QMediaPlayer::StoppedState)
+    if(state == QMediaPlayer::StoppedState && m_player->error() == 0) { // if no error
+        QObject *root = m_view->rootObject();
         QMetaObject::invokeMethod(root, "setStopState"); // stop view
+    }
 }
 
 /* set QML view progress bar position and fade song if <2.5 seconds left
@@ -160,4 +162,14 @@ void Player::setAutoplay(bool autoplay) {
         m_playlist->setPlaybackMode(QMediaPlaylist::Sequential);
     else // disable autoplay
         m_playlist->setPlaybackMode(QMediaPlaylist::CurrentItemOnce);
+}
+
+/* handle media error, disables autoplay and sets view
+ * params:  none
+ * return:  void
+ */
+void Player::error() {
+    m_playlist->setPlaybackMode(QMediaPlaylist::CurrentItemOnce); // disable auto play
+    QObject *root = m_view->rootObject();
+    QMetaObject::invokeMethod(root, "setError"); // error view
 }

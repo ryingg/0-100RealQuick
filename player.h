@@ -21,6 +21,7 @@
  *      position(qint64)                set QML view progress bar position and adj volume
  *      setPosition(qreal)              set QMediaPlayer position from view
  *      setAutoPlay(bool)               set QMediaPlaylist autoplay
+ *      error()                         handle media error
  */
 
 class Player : public QObject {
@@ -44,6 +45,7 @@ private slots:
     void position(qint64);
     void setPosition(qreal);
     void setAutoplay(bool);
+    void error();
 };
 
 #endif // PLAYER_H

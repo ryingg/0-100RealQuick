@@ -19,6 +19,7 @@ import QtQuick 2.0
  * setPlayState()   set view playstate to playing
  * setPauseState()  set view playstate to pause
  * setStopState()   set view playstate to stop
+ * setError()       set error view and disables autoplay
  */
 
 Rectangle {
@@ -44,6 +45,16 @@ Rectangle {
         width: parent.width
         height: parent.height
         color: "#F5F5F5"
+        Text { // empty list error
+            font.family: brandon.name
+            font.weight: Font.Bold
+            font.pointSize: 20
+            color: "#888888"
+            text: "No Songs Available"
+            visible: list.count == 0
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
         ListView { // listview with song list model
             id: list
             anchors.fill: parent
@@ -165,5 +176,14 @@ Rectangle {
         restartView(index)
         playstate = 1
         controller.setPlayState()
+    }
+
+    /* set error view and disables autoplay
+     * params:  none
+     */
+    function setError(){
+        playstate = 0
+        controller.setErrorState()
+        controller.setAutoplay(false)
     }
 }

@@ -13,17 +13,19 @@ import QtQuick 2.0
  * setAutoPlayView(bool autoplay)   sends signal to Player object to set autoplay
  *
  * Functions:
- * setPlayState()                   sets view to playing state
- * setPauseState()                  sets view to pause state
- * setStopState()                   sets view to stop state and hide controller
- * setSongInfo(song, artist, url)   sets view to new song info
- * setPosition(percent)             binds view to new progress bar position
+ * setPlayState()                   set view to playing state
+ * setPauseState()                  set view to pause state
+ * setStopState()                   set view to stop state and hide controller
+ * setSongInfo(song, artist, url)   set view to new song info
+ * setPosition(percent)             bind view to new progress bar position
+ * setAutoplay()                    set autoplay bool
  */
 
 Rectangle {
     id: control
     property string itunes_url: ""
     property int progress: 0
+    property bool autoplay: false
     signal setPositionView(real percent)
     signal setAutoplayView(bool autoplay)
     width: parent.width
@@ -143,9 +145,9 @@ Rectangle {
         id: pause_button
         width: 36
         height: 36
+        visible: viewer.playstate == 1
         anchors.top: prev_button.top
         anchors.left: prev_button.right
-        visible: false
         onClicked: {
             viewer.setPauseState(viewer.active)
             setPauseState()
@@ -165,6 +167,7 @@ Rectangle {
         id: play_button
         width: 36
         height: 36
+        visible: viewer.playstate != 1
         anchors.top: prev_button.top
         anchors.left: prev_button.right
         onClicked: {
@@ -216,15 +219,13 @@ Rectangle {
         anchors.topMargin: 20
         anchors.rightMargin: 14
         onClicked: {
-            if(autoplay_disable.visible) { // enable autoplay
+            if(!autoplay) { // enable autoplay
+                autoplay = true
                 setAutoplayView(true) // send signal to player
-                autoplay_disable.visible = false
-                autoplay_enable.visible = true
             }
             else { // disable autoplay
+                autoplay = false
                 setAutoplayView(false) // send signal to player
-                autoplay_disable.visible = true
-                autoplay_enable.visible = false
             }
         }
         Image {
@@ -232,6 +233,7 @@ Rectangle {
             source: "qrc:/images/autoplaydisable.png"
             width: 17
             height: 23
+            visible: !autoplay
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             anchors.leftMargin: 9
@@ -241,7 +243,7 @@ Rectangle {
             source: "qrc:/images/autoplayenable.png"
             width: 17
             height: 23
-            visible: false
+            visible: autoplay
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             anchors.leftMargin: 9
@@ -279,20 +281,24 @@ Rectangle {
             anchors.top: song_title_controller.bottom
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        Text { // error message
+            id: error_controller
+            font.family: brandon.name
+            font.weight: Font.Medium
+            font.pointSize: 14
+            text: "Error Loading Song"
+            visible: false
+            color: "#888888"
+            anchors.top: parent.top
+            anchors.topMargin: 6
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
     }
 
     /* states of view */
     states: [
         State {
             name: "PLAY"
-            PropertyChanges {
-                target: play_button
-                visible: false
-            }
-            PropertyChanges {
-                target: pause_button
-                visible: true
-            }
         },
         State {
             name: "PAUSE"
@@ -306,6 +312,30 @@ Rectangle {
             PropertyChanges { // keep bar darkened when stopping
                 target: progress_background
                 color: "#7B7B7B"
+            }
+        },
+        State {
+            name: "ERROR"
+            PropertyChanges {
+                target: error_controller
+                visible: true
+            }
+            PropertyChanges {
+                target: song_title_controller
+                visible: false
+            }
+            PropertyChanges {
+                target: artist_controller
+                visible: false
+            }
+            PropertyChanges {
+                target: song_info_controller
+                enabled: false
+                cursorShape: Qt.ArrowCursor
+            }
+            PropertyChanges {
+                target: progress_area
+                enabled: false
             }
         }
     ]
@@ -347,31 +377,71 @@ Rectangle {
                 to: viewer.height;
                 duration: 500
             }
+        },
+        Transition {
+            from: "PLAY"
+            to: "ERROR"
+            PropertyAnimation { // ease in controller
+                easing.type: Easing.InOutCubic;
+                target: control;
+                property: "anchors.topMargin";
+                to: -75;
+                duration: 500
+            }
+            PropertyAnimation { // resize list container
+                easing.type: Easing.InOutCubic;
+                target: list_container;
+                property: "height";
+                to: viewer.height-controller.height;
+                duration: 500
+            }
+        },
+        Transition {
+            from: "STOP"
+            to: "ERROR"
+            PropertyAnimation { // ease in controller
+                easing.type: Easing.InOutCubic;
+                target: control;
+                property: "anchors.topMargin";
+                to: -75;
+                duration: 500
+            }
+            PropertyAnimation { // resize list container
+                easing.type: Easing.InOutCubic;
+                target: list_container;
+                property: "height";
+                to: viewer.height-controller.height;
+                duration: 500
+            }
         }
     ]
 
-    /* sets view to playing state
+    /* set view to playing state
      * params:  none
      */
     function setPlayState(){
         state = "PLAY"
     }
 
-    /* sets view to pause state
+    /* set view to pause state
      * params:  none
      */
     function setPauseState(){
         state = "PAUSE"
     }
 
-    /* sets view to stop state and hide controller
+    /* set view to stop state and hide controller
      * params:  none
      */
     function setStopState(){
         state = "STOP"
     }
 
-    /* sets view to new song info and width of mousearea
+    function setErrorState(){
+        state = "ERROR"
+    }
+
+    /* set view to new song info and width of mousearea
      * params:
      *      song, the new song name
      *      artist, the new artist
@@ -384,11 +454,19 @@ Rectangle {
         itunes_url = url
     }
 
-    /* binds view to new progress bar position percent*totalwidth
+    /* bind view to new progress bar position percent*totalwidth
      * params:
      *      percent, the percent of song progress completed
      */
     function setPosition(percent) {
         progress = Qt.binding(function() { return parseInt(progress_background.width*percent) })
+    }
+
+    /* set autoplay bool
+     * params:
+     *      autop, the autoplay bool
+     */
+    function setAutoplay(autop) {
+        autoplay = autop
     }
 }

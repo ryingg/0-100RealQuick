@@ -40,14 +40,13 @@ QList<Song*> ItunesList::playerSongList() {
  * return:  void
  */
 void ItunesList::buildSongList( QNetworkReply * reply) {
-
+    int song_index = 0;
     QTemporaryFile temp_file; // create temp xml file
     temp_file.open();
     temp_file.write(reply->readAll());
     temp_file.seek(0); //go to the begining of file
 
     QXmlStreamReader reader(&temp_file); // create xml stream reader from file
-    int song_index = 0;
     while (!reader.atEnd() && !reader.hasError()) {
         reader.readNext();
         if (reader.isStartElement() && reader.name() == "entry") { // parse each song
@@ -73,6 +72,5 @@ void ItunesList::buildSongList( QNetworkReply * reply) {
             m_player_song_list.append(song);
         }
     }
-
     emit songListCreated(); // finished appending data, signal to Player
 }
