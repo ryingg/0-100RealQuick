@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-#include "player.h"
+#include "../headers/player.h"
 
 /* Main function instantiates player and executes app */
 int main(int argc, char ** argv) {

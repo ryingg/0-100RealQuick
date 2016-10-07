@@ -1,4 +1,4 @@
-#include "ituneslist.h"
+#include "../headers/ituneslist.h"
 
 /* Top itunes list QObject with network access and song list object
  *

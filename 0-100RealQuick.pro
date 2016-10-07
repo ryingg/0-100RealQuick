@@ -1,13 +1,13 @@
 QT += qml quick network multimedia
 
-SOURCES += main.cpp \
-    song.cpp \
-    player.cpp \
-    ituneslist.cpp
+SOURCES += sources/main.cpp \
+    sources/song.cpp \
+    sources/ituneslist.cpp \
+    sources/player.cpp
 HEADERS += \
-    song.h \
-    player.h \
-    ituneslist.h
+    headers/song.h \
+    headers/player.h \
+    headers/ituneslist.h
 RESOURCES += 0-100RealQuick.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model

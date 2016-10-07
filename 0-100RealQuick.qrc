@@ -1,22 +1,22 @@
 <RCC>
     <qresource prefix="/">
-        <file>view.qml</file>
-        <file>Song.qml</file>
-        <file>Highlight.qml</file>
-        <file>SongText.qml</file>
-        <file>fonts/brandonblack.ttf</file>
-        <file>fonts/brandonbold.ttf</file>
-        <file>fonts/brandonlight.ttf</file>
-        <file>fonts/brandonmedium.ttf</file>
-        <file>fonts/brandonregular.ttf</file>
-        <file>Header.qml</file>
-        <file>images/volume.png</file>
-        <file>Controller.qml</file>
-        <file>images/next.png</file>
-        <file>images/prev.png</file>
-        <file>images/play.png</file>
-        <file>images/pause.png</file>
-        <file>images/autoplayenable.png</file>
-        <file>images/autoplaydisable.png</file>
+        <file>resources/fonts/brandonblack.ttf</file>
+        <file>resources/fonts/brandonbold.ttf</file>
+        <file>resources/fonts/brandonlight.ttf</file>
+        <file>resources/fonts/brandonmedium.ttf</file>
+        <file>resources/fonts/brandonregular.ttf</file>
+        <file>resources/images/autoplaydisable.png</file>
+        <file>resources/images/autoplayenable.png</file>
+        <file>resources/images/next.png</file>
+        <file>resources/images/pause.png</file>
+        <file>resources/images/play.png</file>
+        <file>resources/images/prev.png</file>
+        <file>resources/images/volume.png</file>
+        <file>resources/Controller.qml</file>
+        <file>resources/Header.qml</file>
+        <file>resources/Highlight.qml</file>
+        <file>resources/Song.qml</file>
+        <file>resources/SongText.qml</file>
+        <file>resources/view.qml</file>
     </qresource>
 </RCC>

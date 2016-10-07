@@ -1,4 +1,4 @@
-#include "song.h"
+#include "../headers/song.h"
 
 /* Song QObject holding information for ListView model and QMediaPlaylist
  *

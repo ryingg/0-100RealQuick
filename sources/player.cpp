@@ -1,4 +1,4 @@
-#include "player.h"
+#include "../headers/player.h"
 
 
 /* Music player controller QObject with QQuickView, QMediaPlayer, and QMediaPlaylist
@@ -45,7 +45,7 @@ Player::Player(QObject *parent) : QObject(parent) {
     m_view->setResizeMode(QQuickView::SizeRootObjectToView);
     QQmlContext *ctxt = m_view->rootContext();
     ctxt->setContextProperty("songListModel", QVariant::fromValue(itunes_list->songList()));
-    m_view->setSource(QUrl("qrc:/view.qml"));
+    m_view->setSource(QUrl("qrc:/resources/view.qml"));
     m_view->show();
 
     /* setup signal/slot connections with the QML view and controller */

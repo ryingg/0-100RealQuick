@@ -131,7 +131,7 @@ Rectangle {
             }
         }
         Image {
-            source: "qrc:/images/prev.png"
+            source: "qrc:/resources/images/prev.png"
             width: 16
             height: 10
             anchors.verticalCenter: parent.verticalCenter
@@ -153,7 +153,7 @@ Rectangle {
             setPauseState()
         }
         Image {
-            source: "qrc:/images/pause.png"
+            source: "qrc:/resources/images/pause.png"
             width: 16
             height: 20
             anchors.verticalCenter: parent.verticalCenter
@@ -175,7 +175,7 @@ Rectangle {
             setPlayState()
         }
         Image {
-            source: "qrc:/images/play.png"
+            source: "qrc:/resources/images/play.png"
             width: 16
             height: 20
             anchors.verticalCenter: parent.verticalCenter
@@ -200,7 +200,7 @@ Rectangle {
             }
         }
         Image {
-            source: "qrc:/images/next.png"
+            source: "qrc:/resources/images/next.png"
             width: 16
             height: 10
             anchors.verticalCenter: parent.verticalCenter
@@ -230,7 +230,7 @@ Rectangle {
         }
         Image {
             id: autoplay_disable
-            source: "qrc:/images/autoplaydisable.png"
+            source: "qrc:/resources/images/autoplaydisable.png"
             width: 17
             height: 23
             visible: !autoplay
@@ -240,7 +240,7 @@ Rectangle {
         }
         Image {
             id: autoplay_enable
-            source: "qrc:/images/autoplayenable.png"
+            source: "qrc:/resources/images/autoplayenable.png"
             width: 17
             height: 23
             visible: autoplay

@@ -40,7 +40,7 @@ Rectangle {
 
     /* volume indicator */
     Image {
-        source: "qrc:/images/volume.png"
+        source: "qrc:/resources/images/volume.png"
         width: 16
         height: 12
         visible: viewer.playstate == 1 && index == viewer.active+1 // visible if active song and playing

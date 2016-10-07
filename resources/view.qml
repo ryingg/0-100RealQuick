@@ -34,10 +34,10 @@ Rectangle {
     height: 800
 
     /* load fonts */
-    FontLoader { id: brandon; source: "qrc:/fonts/brandonregular.ttf"}
-    FontLoader { source: "qrc:/fonts/brandonmedium.ttf" }
-    FontLoader { source: "qrc:/fonts/brandonbold.ttf" }
-    FontLoader { source: "qrc:/fonts/brandonblack.ttf" }
+    FontLoader { id: brandon; source: "qrc:/resources/fonts/brandonregular.ttf"}
+    FontLoader { source: "qrc:/resources/fonts/brandonmedium.ttf" }
+    FontLoader { source: "qrc:/resources/fonts/brandonbold.ttf" }
+    FontLoader { source: "qrc:/resources/fonts/brandonblack.ttf" }
 
     /* listview container */
     Rectangle {
