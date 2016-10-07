@@ -58,7 +58,7 @@ Rectangle { // grey background root element
 
     // key listeners
     Keys.onReturnPressed: { // play selected song
-        if(list.currentIndex == -1) // play first song if nothing highlighted
+        if(active == -1) // play first song if nothing highlighted
             setPlayState(0)
         else if(list.currentIndex == active) // restart current song
             setRestartState()
@@ -66,7 +66,7 @@ Rectangle { // grey background root element
             setPlayState(list.currentIndex) // play new song
     }
     Keys.onEnterPressed: { // play selected song
-        if(list.currentIndex == -1) // play first song if nothing highlighted
+        if(active == -1) // play first song if nothing highlighted
             setPlayState(0)
         else if(list.currentIndex == active) // restart current song
             setRestartState()
@@ -84,17 +84,8 @@ Rectangle { // grey background root element
         else // play
             setPlayState(active)
     }
-    Keys.onRightPressed: { // next song
-        if(list.currentIndex == -1) // play first song if none highlighted
-            setPlayState(0)
-        else { // play next song
-            var next = (active+1)%list.count
-            list.currentIndex = next // highlight becomes playing song
-            setPlayState(next)
-        }
-    }
     Keys.onLeftPressed: { // prev song
-        if(list.currentIndex == -1) // play first song if none highlighted
+        if(active == -1) // play first song if none highlighted
             setPlayState(0)
         else if(active == 0) // restart first song
             setRestartState()
@@ -102,6 +93,15 @@ Rectangle { // grey background root element
             var prev = active-1
             list.currentIndex = prev // highlight becomes playing song
             setPlayState(prev)
+        }
+    }
+    Keys.onRightPressed: { // next song
+        if(active == -1) // play first song if none highlighted
+            setPlayState(0)
+        else { // play next song
+            var next = (active+1)%list.count
+            list.currentIndex = next // highlight becomes playing song
+            setPlayState(next)
         }
     }
 
@@ -116,6 +116,7 @@ Rectangle { // grey background root element
     // functions
     function setActive(index) { // set active song index
         active = index
+        list.currentIndex = active // move highlight
     }
     function setPlayState(index){ // set play state
         playView(index) // send signal
@@ -128,9 +129,9 @@ Rectangle { // grey background root element
         controller.setPauseState() // change controller view
     }
     function setStopState(){ // set stop state
-        active = (active+1)%list.count // queue next song with loop, independent of shuffle
+        active = (active+1)%list.count // queue next song with loop
         playstate = 0 // stop state 0
-        list.currentIndex = active
+        list.currentIndex = active // move highlight
         controller.setStopState() // hide controller
     }
     function setRestartState(){ // restart song, set play state

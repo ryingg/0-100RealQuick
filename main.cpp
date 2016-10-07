@@ -4,12 +4,10 @@
 
 #include "player.h"
 
-/*
-   main method
-*/
+/* Main function instantiates player and executes app */
 int main(int argc, char ** argv) {
     QGuiApplication app(argc, argv); // start app and engine
-    Player *player = new Player(); // create music player from song list
+    Player *player = new Player(); // create music player and view
     (void)player; // suppress unused warning
     return app.exec();
 }

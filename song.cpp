@@ -1,5 +1,19 @@
-#include <QDebug>
 #include "song.h"
+
+/* Song QObject holding information for ListView model and QMediaPlaylist
+ *
+ * QObject properties:  index, title, artist, album, album image
+ * Private variables:   m_index, m_title, m_artist, m_album, m_image_url, m_itunes_url, m_song_file_url
+ * Public functions:
+ *      index()         index getter for QObject
+ *      title()         title getter for QObject
+ *      artist()        artist getter for QObject
+ *      album()         album getter for QObject
+ *      imageUrl()      album image getter for QOBject
+ *      itunesUrl()     iTunes URL getter for QOBject
+ *      songFileUrl()   song file getter for QMediaPlaylist
+ *
+ */
 
 Song::Song(QObject *parent)
     : QObject(parent) {

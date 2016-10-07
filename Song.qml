@@ -8,7 +8,7 @@ Rectangle {
     id: song
     height: 50
     width: parent.width
-    color: index == viewer.active+1 && viewer.playstate != 0 ? "#E9E9E9" : "transparent" // darker if active and not stopped
+    color: index == viewer.active+1 && viewer.playstate !== 0 ? "#E9E9E9" : "transparent" // darker if active and not stopped
 
     Rectangle { // bottom border
         height: 1

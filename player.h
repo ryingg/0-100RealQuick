@@ -1,7 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <QObject>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <qqmlcontext.h>
@@ -10,30 +9,41 @@
 #include "song.h"
 #include "ituneslist.h"
 
-/* Music player controller qobject with qquickview, qmediaplayer, and qmediaplaylist
- * Public methods: view()
+/* Music player controller QObject with QQuickView, QMediaPlayer, and QMediaPlaylist
+ *
+ * Private variables:                   m_view, m_controller, m_player, m_playlist, itunes_list
+ * Private Slots:
+ *      play(qint32)                    play song at index
+ *      pause()                         pause song
+ *      restart()                       restart current song
+ *      setSongView()      set QML view to current song
+ *      finished(QMediaPlayer::State)   set stop state
+ *      position(qint64)                set QML view progress bar position and adj volume
+ *      setPosition(qreal)              set QMediaPlayer position from view
+ *      setAutoPlay(bool)               set QMediaPlaylist autoplay
  */
+
 class Player : public QObject {
     Q_OBJECT
+
 public:
     explicit Player(QObject *parent = 0);
-    QQuickView* view(); // quick view accessor
+
 private:
-    QQuickView* m_view; // quick view
-    QObject* m_controller; // view controller
-    QMediaPlayer* m_player; // qmediaplayer
-    QMediaPlaylist* m_playlist; // qmediaplaylist
-    ItunesList *itunes_list; // itunes list object
-signals:
+    QQuickView* m_view;         // quick view QML
+    QObject* m_controller;      // view controller QML
+    QMediaPlayer* m_player;     // backend media player
+    QMediaPlaylist* m_playlist; // backend media playlist
+    ItunesList *itunes_list;    // itunes list object
 private slots:
-    void play(qint32 index); // play media
-    void pause(); // pause media
-    void restart(); // pause media
-    void setSongView(QMediaContent); // set song view
-    void finished(QMediaPlayer::State state); // finished media
-    void position(qint64 position); // update view position
-    void setPosition(qreal percent); // update qmedia position
-    void setAutoplay(bool autoplay); // set autoplay
+    void play(qint32);
+    void pause();
+    void restart();
+    void setSongView();
+    void finished(QMediaPlayer::State);
+    void position(qint64);
+    void setPosition(qreal);
+    void setAutoplay(bool);
 };
 
 #endif // PLAYER_H
