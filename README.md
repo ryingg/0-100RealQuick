@@ -19,7 +19,7 @@ Currently optimized for desktop use for showcasing purposes. See use cases for g
 
 **Enter/Return:** plays the highlighted song, or the first song if none is highlighted, or replays the highlighted song if it is also the active song in the bottom bar
 
-**Space:** plays/pauses the active song in the bottom bar, or the highlighted song if none is active, or the first song is none is highlighted.
+**Space:** plays/pauses the active song in the bottom bar, or the highlighted song if none is active, or the first song if none is highlighted.
 
 **Left:** plays previous song, replay the first song if the first song is active in the bottom bar, or the first song if no songs were played before.
 
