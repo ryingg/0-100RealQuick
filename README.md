@@ -14,12 +14,20 @@ http://stackoverflow.com/questions/17475788/qt-5-1-and-mac-bug-making-macdeployq
 Currently optimized for desktop use for showcasing purposes. See use cases for general usage.
 
 **Double Click:** plays the double clicked song, pauses it if it is already active and playing on the bottom bar
+
 **Single Click:** highlights the clicked song, and activates other on screen UI controls.
+
 **Enter/Return:** plays the highlighted song, or the first song if none is highlighted, or replays the highlighted song if it is also the active song in the bottom bar
+
 **Space:** plays/pauses the active song in the bottom bar, or the highlighted song if none is active, or the first song is none is highlighted.
+
 **Left:** plays previous song, replay the first song if the first song is active in the bottom bar, or the first song if no songs were played before.
+
 **Right:** plays next song, or the first song if none is active in the bottom bar, or the first song if the last song is active
+
 **Up:** highlights the previous song, no wrap
+
 **Down:** highlights the next song, no wrap
+
 **Scroll:** scrolls through the list, no wrap
 
