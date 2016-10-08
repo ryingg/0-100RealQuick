@@ -86,7 +86,7 @@ Rectangle {
             end: Qt.point(270, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FCFCFC" : "transparent" } //FIX
+                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FEFEFE" : "transparent" } //FIX
             }
         }
         LinearGradient { // fade long text for active
@@ -130,7 +130,7 @@ Rectangle {
             end: Qt.point(210, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FCFCFC" : "transparent" }
+                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FEFEFE" : "transparent" }
             }
         }
         LinearGradient { // fade long text for active
@@ -174,7 +174,7 @@ Rectangle {
             end: Qt.point(350, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FCFCFC" : "transparent" }
+                GradientStop { position: 1.0; color: song.ListView.isCurrentItem && index != viewer.active+1 ? "#FEFEFE" : "transparent" }
             }
         }
         LinearGradient { // fade long text for active
