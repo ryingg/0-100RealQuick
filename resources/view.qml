@@ -75,9 +75,11 @@ Rectangle {
 
     /* key listeners */
     Keys.onReturnPressed: { // play selected song
-        if(active == -1) {// play first song if nothing highlighted
-            setPlayState(0)
-        }
+        if(active == -1) // play first song
+            if(list.currentIndex == -1) // if nothing highlighted
+                setPlayState(0)
+            else
+                setPlayState(list.currentIndex)
         else if(list.currentIndex == active) { // restart current song
             setRestartState(active)
         }
@@ -86,12 +88,17 @@ Rectangle {
         }
     }
     Keys.onEnterPressed: { // play selected song
-        if(active == -1) // play first song if nothing highlighted
-            setPlayState(0)
-        else if(list.currentIndex == active) // restart current song
+        if(active == -1) // play first song
+            if(list.currentIndex == -1) // if nothing highlighted
+                setPlayState(0)
+            else
+                setPlayState(list.currentIndex)
+        else if(list.currentIndex == active) { // restart current song
             setRestartState(active)
-        else
+        }
+        else {
             setPlayState(list.currentIndex) // play new song
+        }
     }
     Keys.onSpacePressed: { // play pause
         if(active == -1) // play first song
