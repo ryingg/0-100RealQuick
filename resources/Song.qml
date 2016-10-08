@@ -72,7 +72,7 @@ Rectangle {
         LinearGradient { // fade long text for default
             id: song_default
             anchors.fill: parent
-            start: Qt.point(270, 0) //max width - 10
+            start: Qt.point(269, 0) //max width - 10
             end: Qt.point(270, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -82,7 +82,7 @@ Rectangle {
         LinearGradient { // fade long text for highlight
             id: song_highlight
             anchors.fill: parent
-            start: Qt.point(270, 0) //max width - 10
+            start: Qt.point(269, 0) //max width - 10
             end: Qt.point(270, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -92,7 +92,7 @@ Rectangle {
         LinearGradient { // fade long text for active
             id: song_active
             anchors.fill: parent
-            start: Qt.point(270, 0) //max width - 10
+            start: Qt.point(269, 0) //max width - 10
             end: Qt.point(270, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -116,7 +116,7 @@ Rectangle {
         LinearGradient { // fade long text for highlight inactive
             id: artist_default
             anchors.fill: parent
-            start: Qt.point(210, 0) //max width - 10
+            start: Qt.point(209, 0) //max width - 10
             end: Qt.point(210, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -126,7 +126,7 @@ Rectangle {
         LinearGradient { // fade long text for highlight inactive
             id: artist_highlight
             anchors.fill: parent
-            start: Qt.point(210, 0) //max width - 10
+            start: Qt.point(209, 0) //max width - 10
             end: Qt.point(210, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -136,7 +136,7 @@ Rectangle {
         LinearGradient { // fade long text for active
             id: artist_active
             anchors.fill: parent
-            start: Qt.point(210, 0) //max width - 10
+            start: Qt.point(209, 0) //max width - 10
             end: Qt.point(210, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -160,7 +160,7 @@ Rectangle {
         LinearGradient { // fade long text for default
             id: album_default
             anchors.fill: parent
-            start: Qt.point(350, 0) //max width - 10
+            start: Qt.point(349, 0) //max width - 10
             end: Qt.point(350, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -170,7 +170,7 @@ Rectangle {
         LinearGradient { // fade long text for highlight
             id: album_highlight
             anchors.fill: parent
-            start: Qt.point(350, 0) //max width - 10
+            start: Qt.point(349, 0) //max width - 10
             end: Qt.point(350, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
@@ -180,7 +180,7 @@ Rectangle {
         LinearGradient { // fade long text for active
             id: album_active
             anchors.fill: parent
-            start: Qt.point(350, 0) //max width - 10
+            start: Qt.point(349, 0) //max width - 10
             end: Qt.point(350, 0)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "transparent" }
