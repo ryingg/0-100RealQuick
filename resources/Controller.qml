@@ -265,7 +265,7 @@ Rectangle {
             id: song_title_controller
             font.family: brandon.name
             font.weight: Font.Medium
-            font.pointSize: 14
+            font.pixelSize: 14
             text: ""
             color: "#888888"
             anchors.top: parent.top
@@ -275,7 +275,7 @@ Rectangle {
         Text { // artist
             id: artist_controller
             font.family: brandon.name
-            font.pointSize: 14
+            font.pixelSize: 14
             text: ""
             color: "#888888"
             anchors.top: song_title_controller.bottom
@@ -285,7 +285,7 @@ Rectangle {
             id: error_controller
             font.family: brandon.name
             font.weight: Font.Medium
-            font.pointSize: 14
+            font.pixelSize: 14
             text: "Error Loading Song"
             visible: false
             color: "#888888"

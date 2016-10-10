@@ -38,7 +38,7 @@ Item {
             Text {
                 font.family: brandon.name
                 font.weight: Font.Medium
-                font.pointSize: 20
+                font.pixelSize: 20
                 text: "0-100"
                 color: "#7B7B7B"
                 anchors.verticalCenter: parent.verticalCenter
@@ -48,7 +48,7 @@ Item {
                 id: realquick
                 font.family: brandon.name
                 font.weight: Font.Black
-                font.pointSize: 20
+                font.pixelSize: 20
                 text: "REALQUICK"
                 color: "#7B7B7B"
                 anchors.verticalCenter: parent.verticalCenter
