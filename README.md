@@ -1,6 +1,20 @@
 #Build & Run
 Currently optimized for desktop use for showcasing purposes. To optimize for mobile use, set the property variable tap_to_play to true in view.qml. This disables double click and enables single tap.
 
+##Linux (Ubuntu 15.04 with QT Creator 5.7.0)
+
+1. Install QT Creator and OpenGL libraries following this https://wiki.qt.io/Install_Qt_5_on_Ubuntu
+1. Install GStreamer with restricted extras
+sudo apt-get update
+sudo apt-get install ubuntu-restricted-extras
+1. QT utilizes GStreamer 0.10 plugins for its multimedia dependencies
+sudo add-apt-repository ppa:mc3man/gstffmpeg-keep
+sudo apt-get update
+sudo apt-get install gstreamer0.10-ffmpeg
+1. Open the 0-100RealQuick.pro file in QT Creator and build and run, making sure the default kit is detected in QT Creator>Preferences>Build & Run>Kits
+
+
+
 ##Mac OSX (El Capitan 10.11.3 with QT Creator 5.7.0)
 ####Run
 Run the app from the included 0-100RealQuick.dmg file
