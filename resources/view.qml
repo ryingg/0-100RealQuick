@@ -127,7 +127,7 @@ Rectangle {
             setPlayState(0)
         else { // play next song
             var next = (active+1)%list.count
-            list.currentIndex = next // highlight becomes playing song
+            setActive(next) // highlight becomes playing song
             setPlayState(next)
         }
     }
