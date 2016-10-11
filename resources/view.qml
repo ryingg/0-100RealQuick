@@ -118,7 +118,7 @@ Rectangle {
             setRestartState(active)
         else { // play prev song
             var prev = active-1
-            list.currentIndex = prev // highlight becomes playing song
+            setActive(prev) // highlight becomes playing song
             setPlayState(prev)
         }
     }
